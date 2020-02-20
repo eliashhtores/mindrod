@@ -207,7 +207,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
                 }
                 ?>
                 </select>
-                <small class="form-text text-muted">Control + click para seleccionar</small>
+                <small class="form-text text-muted">Control + click para seleccionar o deseleccionar</small>
               </div>
 
               <div class="row mt-2">
