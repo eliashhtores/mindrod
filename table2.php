@@ -317,7 +317,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
                       } else if ($value == 'row_color') {
                         continue;
                       } else {
-                        echo "<td><div align='center'>{$result[$attributes[$key]]}</div></td>";
+                        echo "<td><div align='center' id='{$attributes[$key]}-{$result['id']}'>{$result[$attributes[$key]]}</div></td>";
                       }
                     }
                     echo "</tr>";

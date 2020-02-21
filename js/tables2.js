@@ -15,9 +15,13 @@ function loadTable() {
 };
 
 $(document).ready(function () {
+    let id = '';
+    let rowClass = '';
+    let row = '';
     $(document).on('click', '.edit_data', function () {
         $('#insert_form')[0].reset();
-        const id = $(this).attr("id");
+        id = $(this).attr("id");
+        row = $(this).parent().parent();
         const url = '/mindrod/api/work_order/read_single.php';
 
         $.ajax({
@@ -45,9 +49,9 @@ $(document).ready(function () {
                 $('#status').val(response.status);
                 $('#observations').val(response.observations);
                 $('#row_color_single').val(response.row_color);
+                rowClass = response.row_color;
                 $('#insert').val("Modificar");
                 $('#updateModal').modal('show');
-                // console.log(response);
             }
         });
     });
@@ -55,19 +59,22 @@ $(document).ready(function () {
     $('.remove-data').on("click", function (event) {
         event.preventDefault();
         id = $(this).attr("id");
-        const data = JSON.stringify({
-            'id': id
-        });
-        $.ajax({
-            url: '/mindrod/api/work_order/deactivate_work_order.php',
-            method: "POST",
-            data: data,
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-                location.reload();
-            }
-        });
+        row = $(this).parent().parent();
+        const data = JSON.stringify({'id': id});
+
+        const answer = confirm('¿Desea borrar esta orden de trabajo?');
+        if (answer) {
+            $.ajax({
+                url: '/mindrod/api/work_order/deactivate_work_order.php',
+                method: "POST",
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    row.remove();
+                    console.log(data);
+                }
+            });   
+        }
     });
 
     $(document).on('submit', '#insert_form', function (e) {
@@ -91,6 +98,7 @@ $(document).ready(function () {
             dataType: "json",
             data: data,
             beforeSend: function () {
+                row.removeClass(rowClass);
                 $('#insert').prop("disabled", true);
                 $('#insert').val("Modificando");
             },
@@ -100,13 +108,42 @@ $(document).ready(function () {
                 }
                 $('#insert_form')[0].reset();
                 $('#updateModal').modal('hide');
-                console.log(response);
+                const invoice = '#invoice' + `-${response.result.id}`;
+                const work_order_number = '#work_order_number' + `-${response.result.id}`;
+                const dwg_number = '#dwg_number' + `-${response.result.id}`;
+                const description = '#collapse-btn-description' + `-${response.result.id}`;
+                const client = '#client' + `-${response.result.id}`;
+                const machine = '#machine' + `-${response.result.id}`;
+                const quantity = '#quantity' + `-${response.result.id}`;
+                const serial = '#serial' + `-${response.result.id}`;
+                const receipt_date = '#receipt_date' + `-${response.result.id}`;
+                const commitment_date = '#commitment_date' + `-${response.result.id}`;
+                const due_date = '#due_date' + `-${response.result.id}`;
+                const rework = '#rework' + `-${response.result.id}`;
+                const indicator = '#indicator' + `-${response.result.id}`;
+                const machinist = '#machinist' + `-${response.result.id}`;
+                const status = '#status' + `-${response.result.id}`;
+                const observations = '#collapse-btn-observations' + `-${response.result.id}`;
+                row.addClass(response.result.row_color);
 
-                // var table = $('#dataTable').DataTable( {
-                //     ajax: data
-                // });
-                // table.ajax.reload();
-                location.reload();
+                $(invoice).html(response.result.invoice);
+                $(work_order_number).html(response.result.work_order_number);
+                $(dwg_number).html(response.result.dwg_number);
+                $(description).html(response.result.description);
+                $(client).html(response.result.client);
+                $(machine).html(response.result.machine);
+                $(quantity).html(response.result.quantity);
+                $(serial).html(response.result.serial);
+                $(receipt_date).html(response.result.receipt_date);
+                $(commitment_date).html(response.result.commitment_date);
+                $(due_date).html(response.result.due_date);
+                $(rework).html(response.result.rework);
+                $(indicator).html(response.result.indicator);
+                $(machinist).html(response.result.machinist);
+                $(status).html(response.result.status);
+                $(observations).html(response.result.observations);
+
+                console.log(response);
             }
         });
     });
