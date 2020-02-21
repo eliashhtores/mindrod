@@ -24,6 +24,7 @@
     public $status;
     public $observations;
     public $row_color;
+    public $monthQuery;
 
     // Constructor with DB
     public function __construct($db) {
@@ -80,6 +81,40 @@
       $this->status = $row['status'];
       $this->observations = $row['observations'];
       $this->row_color = $row['row_color'];
+    }
+
+    // Get totals
+    public function load_totals() {
+      // Create query
+      // @QTODO Get aditional parameters
+      $query = "SELECT 
+        SUM(CASE WHEN indicator = 'AT' THEN 1 ELSE 0 END) AS early,
+        SUM(CASE WHEN indicator = 'ET' THEN 1 ELSE 0 END) AS onTime,
+        SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS outOfTime,
+        SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
+        AVG(status) AS average,
+        COUNT(*) AS total
+        FROM $this->table
+        WHERE YEAR(receipt_date) = $this->year
+          $this->monthQuery
+          AND status >= 0";
+
+      // Prepare statement
+      $stmt = $this->conn->prepare($query);
+
+      // Execute query
+      $stmt->execute();
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      // Set properties
+      $this->early = $row['early'];
+      $this->onTime = $row['onTime'];
+      $this->outOfTime = $row['outOfTime'];
+      $this->reworks = $row['reworks'];    
+      $this->average = number_format((float)$row['average'], 2, '.', '') . '%';
+      $this->total = $row['total'];
+      // $this->total = $query;
     }
 
     // Deactivate single work order
@@ -240,7 +275,10 @@
       $stmt->bindParam(':commitment_date', $this->commitment_date);
       $stmt->bindParam(':observations', $this->observations);
       $stmt->bindParam(':created_by', $this->created_by);
-          
+
+      // Update folio
+      $this->setFolio();
+
       // Execute query
       if($stmt->execute()) {
         $this->updateSerial();
@@ -270,6 +308,26 @@
       $folio = $stmt->fetch();
       return $folio[0];
     }
+
+    public function setFolio() {
+      $query = "UPDATE folio SET current_folio = current_folio + 1";
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+    }
+
+    public function getParam($param) {
+      if (count($param) <= 0) {
+        return false;
+      }
+      //   foreach ($workOrder->month as $value)
+      //     echo $value."\n";
+      
+      $query = "SELECT current_folio + 1 FROM folio";
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+      $folio = $stmt->fetch();
+      return $folio[0];
+    } 
 
     // Update serial
     public function updateSerial() {
