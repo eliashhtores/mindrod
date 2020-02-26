@@ -25,6 +25,8 @@
     public $observations;
     public $row_color;
     public $monthQuery;
+    public $rowColorQuery;
+    public $query;
 
     // Constructor with DB
     public function __construct($db) {
@@ -34,10 +36,13 @@
     // Get work orders 
     public function read() {
       // Create query
-      $query = 'SELECT * FROM work_order WHERE YEAR(receipt_date) = ? AND MONTH(receipt_date) = ? AND status >= 0';
+      $this->query = "SELECT * FROM $this->table WHERE YEAR(receipt_date) = $this->year
+      $this->monthQuery
+      $this->rowColorQuery
+      AND status >= 0";
 
       // Prepare statement
-      $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($this->query);
 
       // Execute query
       $stmt->execute([$this->years, $this->month]);
@@ -48,17 +53,13 @@
     // Get single work order
     public function read_single() {
       // Create query
-      $query = 'SELECT *
-                FROM ' . $this->table . ' 
-                WHERE
-                  id = ?';
+      $this->query = 'SELECT * FROM ' . $this->table . ' WHERE id = ?';
 
       // Prepare statement
-      $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($this->query);
 
       // Execute query
       $stmt->execute([$this->id]);
-
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
       // Set properties
@@ -86,8 +87,7 @@
     // Get totals
     public function load_totals() {
       // Create query
-      // @QTODO Get aditional parameters
-      $query = "SELECT 
+      $this->query = "SELECT 
         SUM(CASE WHEN indicator = 'AT' THEN 1 ELSE 0 END) AS early,
         SUM(CASE WHEN indicator = 'ET' THEN 1 ELSE 0 END) AS onTime,
         SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS outOfTime,
@@ -97,14 +97,14 @@
         FROM $this->table
         WHERE YEAR(receipt_date) = $this->year
           $this->monthQuery
+          $this->rowColorQuery
           AND status >= 0";
 
       // Prepare statement
-      $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($this->query);
 
       // Execute query
       $stmt->execute();
-
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
       // Set properties
@@ -114,17 +114,16 @@
       $this->reworks = $row['reworks'];    
       $this->average = number_format((float)$row['average'], 2, '.', '') . '%';
       $this->total = $row['total'];
-      // $this->total = $query;
     }
 
     // Deactivate single work order
     public function deactivate_work_order() {
       // Deactivate query
-      $query = 'UPDATE work_order SET status = -1, updated_by = :updated_by
+      $this->query = 'UPDATE work_order SET status = -1, updated_by = :updated_by
         WHERE id = :id';
 
       // Prepare statement
-      $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($this->query);
 
       $stmt->bindParam(':updated_by', $this->updated_by);
       $stmt->bindParam(':id', $this->id);
@@ -155,9 +154,6 @@
       $this->machine = $this->cleanData($this->machine);
       $this->quantity = $this->cleanData($this->quantity);
       $this->serial = $this->cleanData($this->serial);
-      $this->receipt_date = $this->cleanData($this->receipt_date);
-      $this->commitment_date = $this->cleanData($this->commitment_date);
-      $this->due_date = $this->cleanData($this->due_date);
       $this->rework = $this->cleanData($this->rework);
       $this->indicator = $this->cleanData($this->indicator);
       $this->machinist = $this->cleanData($this->machinist);
@@ -237,13 +233,13 @@
     // Create work order
     public function create() {
       // Create query
-      $query = 'INSERT INTO ' . $this->table . ' SET invoice = :invoice, work_order_number = :work_order_number, folio = :folio, dwg_number = :dwg_number,
+      $this->query = 'INSERT INTO ' . $this->table . ' SET invoice = :invoice, work_order_number = :work_order_number, folio = :folio, dwg_number = :dwg_number,
       description = :description, client = :client, machine = :machine, quantity = :quantity,
       serial = :serial, receipt_date = :receipt_date, commitment_date = :commitment_date, observations = :observations,
       created_by = :created_by';
 
       // Prepare statement
-      $stmt = $this->conn->prepare($query);
+      $stmt = $this->conn->prepare($this->query);
 
       // Clean data
       $this->invoice = $this->cleanData($this->invoice);
@@ -276,12 +272,10 @@
       $stmt->bindParam(':observations', $this->observations);
       $stmt->bindParam(':created_by', $this->created_by);
 
-      // Update folio
-      $this->setFolio();
-
       // Execute query
       if($stmt->execute()) {
         $this->updateSerial();
+        $this->setFolio();
         return true;
       }
 
@@ -314,20 +308,6 @@
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
     }
-
-    public function getParam($param) {
-      if (count($param) <= 0) {
-        return false;
-      }
-      //   foreach ($workOrder->month as $value)
-      //     echo $value."\n";
-      
-      $query = "SELECT current_folio + 1 FROM folio";
-      $stmt = $this->conn->prepare($query);
-      $stmt->execute();
-      $folio = $stmt->fetch();
-      return $folio[0];
-    } 
 
     // Update serial
     public function updateSerial() {

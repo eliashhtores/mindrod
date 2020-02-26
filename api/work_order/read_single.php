@@ -17,7 +17,13 @@
   $workOrder->id = isset($_GET['id']) ? $_GET['id'] : die();
 
   // Get Work order
-  $workOrder->read_single();
+  try {
+    $workOrder->read_single();
+  } catch (Exception $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    echo $e->getMessage() . ' while executing: ' . $workOrder->query . ' with params: ' . $workOrder->id;
+    return;
+  } 
 
   // Create array
   $workOrder_arr = array(

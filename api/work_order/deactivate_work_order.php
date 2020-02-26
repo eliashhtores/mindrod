@@ -23,15 +23,16 @@
   $workOrder->id = $data->id;
   $workOrder->updated_by = $_SESSION['id'];
 
-  // Update Work order
-  if($workOrder->deactivate_work_order()) {
+  // Update Work orde
+  try {
+    $workOrder->deactivate_work_order();
+  } catch (Exception $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    echo $e->getMessage() . ' while executing: ' . $workOrder->query;
+    return;
+  }
+
     echo json_encode(
       array('message' => 'Work order updated',
             'result' => $workOrder)
-    );
-  } else {
-    echo json_encode(
-      array('message' => 'Work order not updated')
-    );
-  }
-
+      );

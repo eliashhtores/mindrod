@@ -33,13 +33,15 @@
   $workOrder->created_by = $user_id = $_SESSION['id'];
 
   // Create work order
-  if($workOrder->create()) {
-    echo json_encode(
-      array('message' => 'Work order created',
-            'result' => $workOrder)
-    );
-  } else {
-    echo json_encode(
-      array('message' => 'Work order not created')
-    );
+  try {
+    $workOrder->create();
+  } catch (Exception $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    echo $e->getMessage() . ' while executing: ' . $workOrder->query;
+    return;
   }
+
+  echo json_encode(
+    array('message' => 'Work order created',
+          'result' => $workOrder)
+    );

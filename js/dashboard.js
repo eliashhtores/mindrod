@@ -89,7 +89,7 @@ $(document).ready(function() {
       },
       error: function (err) {
         ui.showAlert('Ocurrio un error al agregar la orden de trabajo, favor de revisar los datos.', 'alert alert-danger alert-dismissible');
-        console.log(err);
+        console.log(err.responseText);
       }
     });
   });

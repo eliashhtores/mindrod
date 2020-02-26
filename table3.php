@@ -1,72 +1,6 @@
 <?php
 require_once('include/connect.php');
 require_once('include/auth.php');
-
-$year = $_GET['years'];
-
-if (isset($_GET['month'])) {
-  $month = $_GET['month'];  
-  foreach($month as &$value){
-     $value = "'$value'";
-  }
-  $month = implode(",", $month);
-  $monthQuery = "AND MONTH(receipt_date) IN ($month)";
-} else {
-  $monthQuery = '';
-}
-
-if (isset($_GET['row_color'])) {
-  $rowColor = $_GET['row_color'];  
-  foreach($rowColor as &$value){
-     $value = "'$value'";
-  }
-  $rowColor = implode(",", $rowColor);
-  $rowColorQuery = "AND row_color IN ($rowColor)";
-} else {
-  $rowColorQuery = '';
-}
-
-$user_id = $_SESSION['id'];
-$link = "#";
-
-$sth = $dbh->query("SELECT * FROM work_order WHERE YEAR(receipt_date) = $year $monthQuery $rowColorQuery AND status >= 0");
-$results = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-$headers = array('', '', '', 'No.Fact.', 'No.Oc', 'Folio', 'Dwg', 'Descripción', 'Cliente', 'Maquina', 'Cantd', 'Serie', 'Recibido', 'Compromiso', 'Entrega', 'Retrabajos', 'Indic.', 'Realizó Mecánico', 'Status', 'Observaciones', 'Status OC');
-$months = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-$colors = array('row-pink' => 'Entregado al cliente', 'row-blue' => 'En almacén', 'row-red' => 'Cuarentena');
-
-$sth = $dbh->query("SELECT attributes FROM role
-JOIN user ON (role.id = user.role_id)
-WHERE user.id = $user_id");
-$results_attr = $sth->fetch();
-
-$sth = $dbh->query('SELECT DISTINCT(YEAR(STR_TO_DATE(receipt_date, "%Y-%m-%d"))) AS year FROM work_order WHERE status >= 0');
-$results_years = $sth->fetchAll();
-
-$attributes = array('invoice', 'work_order_number', 'folio', 'dwg_number', 'description', 'client', 'machine', 'quantity', 'serial', 'receipt_date', 'commitment_date', 'due_date', 'rework', 'indicator', 'machinist', 'status', 'observations', 'row_color');
-$user_attrs = explode(", ", $results_attr['attributes']);
-
-$sth = $dbh->query("SELECT COUNT(*) AS total
-FROM work_order
-WHERE YEAR(receipt_date) = $year
-  $monthQuery
-  $rowColorQuery
-  AND status >= 0");
-$result = $sth->fetch(PDO::FETCH_ASSOC);
-
-$sth = $dbh->query("SELECT 
-SUM(CASE WHEN indicator = 'AT' THEN 1 ELSE 0 END) AS early,
-SUM(CASE WHEN indicator = 'ET' THEN 1 ELSE 0 END) AS on_time,
-SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
-SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
-AVG(status) AS average
-FROM work_order
-WHERE YEAR(receipt_date) = $year
-$monthQuery
-$rowColorQuery
-AND status >= 0");
-$data = $sth->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,17 +46,14 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
 
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
     <div class="container">
-      <?php
-        if ($_SESSION['role_id'] == 1) {
-          $link = "dashboard.php";
-        }
-        echo "<a class='navbar-brand mr-1' href='$link'>MINDROD</a>";
-      ?>
 
+    <!-- Get the role id to find out if the link will be displayed -->
+      <a class='navbar-brand mr-1' href='dashboard.php'>MINDROD</a>
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item">
-          <a class="nav-link" href="<?php echo $link; ?>">
+          <!-- Get the role id to find out if the link will be displayed -->
+          <a class="nav-link" href="dashboard.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Administración</span>
           </a>
@@ -133,7 +64,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
             <span>Gráficas</span></a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="create_table3.php">
+          <a class="nav-link" href="create_table2.php">
             <i class="fas fa-fw fa-table"></i>
             <span>Ordenes de trabajo</span></a>
         </li>
@@ -166,66 +97,50 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
         <div class="row text-center">
 
           <div class="col">
-          <table class="table table-bordered">
+          <table class="table table-striped table-bordered nowrap dataTable no-footer">
             <tbody>
               <tr>
                   <td>Cumplimiento mes</td>
-                  <td><?php echo number_format((float)$data['average'], 2, '.', ''); ?>%</td>
+                  <td id="average"></td>
               </tr>
                 <tr>
                   <td>Número de ordenes</td>
-                  <td><?php echo $result['total']; ?></td>
+                  <td id="total"></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           <div class="container w-25">
-            <form action="table3.php" method="get">
+            <form>
               <div class="row">
                 <select class="form-control" id="years" name="years">
-                  <?php
-                  foreach ($results_years as $results_year) {
-                    $selected = '';
-                    $results_year['year'] == $year ? $selected = "selected='selected'" : '';
-                    echo "<option $selected value='{$results_year['year']}'>{$results_year['year']}</option>";
-                  }
-                  ?>
+                  <option  value='2019'>2019</option><option selected='selected' value='2020'>2020</option>
                 </select>
               </div>
 
               <div class="row mt-2">
                 <select class="form-control" multiple id="month" name="month[]" size="9">
-                <?php
-                foreach ($months as $key => $value) {
-                  $key++;
-                  $selected = '';
-                  if (in_array($key, $_GET['month'])) {
-                    $selected = "selected='selected'";
-                  }
-                  echo "<option value='$key' $selected>$value</option>";
-                }
-                ?>
+                  <option value='1' >Enero</option>
+                  <option value='2' >Febrero</option>
+                  <option value='3' >Marzo</option>
+                  <option value='4' >Abril</option>
+                  <option value='5' >Mayo</option>
+                  <option value='6' >Junio</option>
+                  <option value='7' >Julio</option>
+                  <option value='8' >Agosto</option>
+                  <option value='9' >Septiembre</option>
+                  <option value='10' >Octubre</option>
+                  <option value='11' >Noviembre</option>
+                  <option value='12' >Diciembre</option>
                 </select>
-                <small class="form-text text-muted">Control + click para seleccionar</small>
+                <small class="form-text text-muted">Control + click para seleccionar o deseleccionar</small>
               </div>
 
               <div class="row mt-2">
                 <label class='small' for='row_color'>Status</label>
                 <select class='form-control form-control-sm' multiple id='row_color' name="row_color[]" size="9">
-                <?php
-                
-                foreach ($colors as $key => $value) {
-                  $selected = '';
-                  if (isset($_GET['row_color'])) {                  
-                    if (in_array($key, $_GET['row_color'])) {
-                      $selected = "selected='selected'";
-                    }
-                  }
-                  echo "<option value='$key' $selected>$value</option>";
-                }
-                ?>
-                </select>
+                <option value='row-pink' >Entregado al cliente</option><option value='row-blue' >En almacén</option><option value='row-red' >Cuarentena</option>                </select>
               </div>
 
               <div class="row mt-2 mb-2">
@@ -235,7 +150,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
           </div>
         
           <div class="col text-mutted">
-          <table class="table table-bordered">
+          <table class="table table-striped table-bordered nowrap dataTable no-footer">
             <thead>
               <tr>
                   <th>Cantidad</th>
@@ -245,36 +160,24 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
             </thead>
             <tbody>
               <tr>
-                  <td><?php echo $data['early']; ?></td>
-                  <td>Antes de tiempo (AT)</td>
-                  <?php
-                  $data['early'] == 0 ? $early = 0 : $early = number_format((float)$data['early']/$result['total'] * 100, 2, '.', '');
-                  ?>
-                  <td class="alert alert-success"><?php echo $early;?></td>
+                <td id="early"></td>
+                <td>Antes de tiempo (AT)</td>
+                <td class="alert alert-success" id ="earlyPercent"></td>
               </tr>
                 <tr>
-                  <td><?php echo $data['on_time']; ?></td>
-                  <td>En tiempo (ET)</td>
-                  <?php
-                  $data['on_time'] == 0 ? $on_time = 0 : $on_time = number_format((float)$data['on_time']/$result['total'] * 100, 2, '.', '');
-                  ?>                  
-                  <td class="alert alert-warning"><?php echo $on_time; ?></td>
+                  <td id="onTime"></td>
+                  <td>En tiempo (ET)</td>            
+                  <td class="alert alert-warning" id="onTimePercent"></td>
                 </tr>
                 <tr>
-                  <td><?php echo $data['out_of_time']; ?></td>
-                  <td>Fuera de tiempo (FT)</td>
-                  <?php
-                  $data['out_of_time'] == 0 ? $out_of_time = 0 : $out_of_time = number_format((float)$data['out_of_time']/$result['total'] * 100, 2, '.', '');
-                  ?>                  
-                  <td class="alert alert-danger"><?php echo $out_of_time; ?></td>
+                  <td id="outOfTime"></td>
+                  <td>Fuera de tiempo (FT)</td>   
+                  <td class="alert alert-danger" id="outOfTimePercent"></td>
                 </tr>
                 <tr>
-                  <td><?php echo $data['reworks']; ?></td>
-                  <td>Retrabajo (R)</td>
-                  <?php
-                  $data['reworks'] == 0 ? $reworks = 0 : $reworks = number_format((float)$data['reworks']/$result['total'] * 100, 2, '.', '');
-                  ?>                  
-                  <td class="alert alert-primary"><?php echo $reworks; ?></td>
+                  <td id="reworks"></td>
+                  <td>Retrabajo (R)</td>            
+                  <td class="alert alert-primary" id="reworksPercent"></td>
                 </tr>
               </tbody>
             </table>
@@ -283,51 +186,46 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
         </div>
 
         <div class="card mb-3" id="work-orders">
+
           <div class="card-header">
-            <i class="fas fa-table"></i>
-            Ordenes de trabajo</div>
+            <i class="fas fa-table"></i> Ordenes de trabajo
+          </div>
+
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+              <table class="table table-bordered nowrap dataTable no-footer" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                   <tr id="headers">
                 </thead>
-                <tbody id="table">
-                <?php
-                  foreach ($results as $result) {
-                    echo "<tr class='item {$result['row_color']}'>";
-                    echo "<td><button id='{$result['id']}' class='btn btn-link edit_data'><i class='fa fa-pencil-square-o'></i></button></td>";
-                    echo "<td><a href='/mindrod/uploads/{$result['id']}.pdf' target='_blank' class='btn btn-link'><i class='fas fa-file-pdf'></i></a></td>";
-                    echo "<td><button id='{$result['id']}' class='btn btn-alert btn-link remove-data'><i class='fa fa-remove'></i></button></td>";
-                    foreach ($attributes as $key => $value) {
-                      if ($value == 'description') {
-                        echo "<td>
-                        <div align='center'><button class='btn btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-description-{$result['id']}'>Ver</button></div>
-                        <div class='collapse mt-2' id='collapse-btn-description-{$result['id']}'>
-                          {$result[$attributes[$key]]}
-                        </div>
-                        </td>";
-                      } else if ($value == 'observations') {
-                        echo "<td>
-                        <div align='center'><button class='btn btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-observations-{$result['id']}'>Ver</button></div>
-                        <div class='collapse mt-2' id='collapse-btn-observations-{$result['id']}'>
-                          {$result[$attributes[$key]]}
-                        </div>
-                        </td>";
-                      } else if ($value == 'row_color') {
-                        continue;
-                      } else {
-                        echo "<td><div align='center'>{$result[$attributes[$key]]}</div></td>";
-                      }
-                    }
-                    echo "</tr>";
-                  }
-                  ?>
+                <tbody id="table" class="text-center">
+                  <tr class='item '><td><button id='58' class='btn btn-link edit_data'><i class='fa fa-pencil-square-o'></i></button></td>
+                    <td><a href='/mindrod/uploads/58.pdf' target='_blank' class='btn btn-link'><i class='fas fa-file-pdf'></i></a></td>
+                    <td><button id='58' class='btn btn-alert btn-link remove-data'><i class='fa fa-remove'></i></button></td>
+                    <td><div>Test</div></td>
+                    <td><div>123</div></td>
+                    <td><div>22</div></td>
+                    <td><div>3123</div></td>
+                    <td>
+                      <div><button class='btn btn-xs btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-description-58'>Ver</button></div>
+                      <div class='collapse mt-2' id='collapse-btn-description-58'>3123</div>
+                    </td>
+                    <td><div>21323</div></td>
+                    <td><div>2312</div></td>
+                    <td><div>2</div></td>
+                    <td><div>MIN-7884-7885</div></td>
+                    <td><div>2020-02-20</div></td><td><div>2020-02-20</div></td><td><div></div></td><td><div></div></td><td><div></div></td><td><div></div></td><td><div>0</div></td><td>
+                    <div><button class='btn btn-xs btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-observations-58'>Ver</button></div>
+                    <div class='collapse mt-2' id='collapse-btn-observations-58'>Test</div>
+                    </td>
+                  </tr> 
                 </tbody>
               </table>
+
             </div>
           </div>
-          <div class="card-footer small text-muted">Última actualización <?php echo date("Y-m-d H:i:s"); ?></div>
+
+          <div class="card-footer small text-muted" id="lastUpdate">Última actualización 2020-02-20 11:34:45</div>
         </div>
         </div>
       </div>
@@ -343,54 +241,8 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
             </div>
             <div class="modal-body">
               <form method="GET" id="insert_form">
-              <?php
-              $disabled = '';
-              foreach ($attributes as $key => $value) {
-                if (in_array($value, $user_attrs)) {
-                  $label = $key + 3;
-                  echo '<div class="form-group">';
-                  if ($value === 'description' || $value === 'observations') {
-                    echo "<label class='small' for='$value'>$headers[$label]</label>";
-                    echo "<textarea rows='2' cols='45' class='form-control form-control-sm' id='$value' name='$value'></textarea>";
-                  } else if ($value === 'status' || $value === 'quantity') {
-                    if ($value === 'quantity') 
-                      $disabled = 'disabled';
-                    echo "<label class='small' for='$value'>$headers[$label]</label>";
-                    echo "<input type='number' class='form-control form-control-sm w-25' min=0 id='$value' name='$value' $disabled>";
-                  } else if ($value === 'receipt_date' || $value === 'commitment_date' || $value === 'due_date') {
-                    echo "<label class='small' for='$value'>$headers[$label]</label>";
-                    echo "<input type='date' class='form-control form-control-sm' id='$value' name='$value'>";
-                  } else if ($value === 'rework') {
-                    echo "<label class='small' for='$value'>$headers[$label]</label>";
-                    echo "<select class='form-control form-control-sm' id='rework' name='rework'>";
-                    echo "<option></option>";
-                    echo '<option value="R">Sí</option>';
-                    echo "</select>";
-                  } else if ($value === 'row_color') {
-                    echo "<label class='small' for='$value'>$headers[$label]</label>";
-                    echo "<select class='form-control form-control-sm' id='row_color_single' name='row_color_single'>";
-                    echo "<option></option>";
-                    echo '<option value="row-pink">Entregado al cliente</option>';
-                    echo '<option value="row-blue">En almacén</option>';
-                    echo '<option value="row-red">Cuarentena</option>';
-                    echo "</select>";
-                  } else if ($value === 'folio') {
-                    continue;
-                  } else {
-                    echo "<label class='small' for='$value'>$headers[$label]</label>";
-                    echo "<input type='text' class='form-control form-control-sm' id='$value' name='$value' $disabled>";
-
-                  }
-                  echo "</div>";
-                }
-              }
-              echo '<div class="form-group">';
-              echo '<label class="small" for="pdf">Archivo PDF</label>';
-              echo '<input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file">';
-              echo '</div>';
-              ?>
-                <input type="hidden" name="id" id="id" />
-                <input type="hidden" name="updated_by" id="updated_by" value="<?php echo $user_id; ?>" />
+              <div class="form-group"><label class='small' for='invoice'>No.Fact.</label><input type='text' class='form-control form-control-sm' id='invoice' name='invoice' ></div><div class="form-group"><label class='small' for='work_order_number'>No.Oc</label><input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number' ></div><div class="form-group"><label class='small' for='dwg_number'>Dwg</label><input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number' ></div><div class="form-group"><label class='small' for='description'>Descripción</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea></div><div class="form-group"><label class='small' for='client'>Cliente</label><input type='text' class='form-control form-control-sm' id='client' name='client' ></div><div class="form-group"><label class='small' for='machine'>Maquina</label><input type='text' class='form-control form-control-sm' id='machine' name='machine' ></div><div class="form-group"><label class='small' for='quantity'>Cantd</label><input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled></div><div class="form-group"><label class='small' for='serial'>Serie</label><input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled></div><div class="form-group"><label class='small' for='receipt_date'>Recibido</label><input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'></div><div class="form-group"><label class='small' for='commitment_date'>Compromiso</label><input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'></div><div class="form-group"><label class='small' for='observations'>Observaciones</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='observations' name='observations'></textarea></div><div class="form-group"><label class='small' for='row_color'>Status OC</label><select class='form-control form-control-sm' id='row_color_single' name='row_color_single'><option></option><option value="row-pink">Entregado al cliente</option><option value="row-blue">En almacén</option><option value="row-red">Cuarentena</option></select></div><div class="form-group"><label class="small" for="pdf">Archivo PDF</label><input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file"></div>                <input type="hidden" name="id" id="id" />
+                <input type="hidden" name="updated_by" id="updated_by" value="1" />
               </div>
               <div class="modal-footer">
                 <input type="submit" name="insert" id="insert" value="Modificar" class="btn btn-primary" />
@@ -400,6 +252,16 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
         </div>
       </div>
     </div>
+
+    <!-- Sticky Footer -->
+    <!-- <footer class="sticky-footer">
+      <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+          Copyright © Mindrod <span id="currentYear"></span>
+        </div>
+      </div>
+    </footer> -->
+    <!-- /.content-wrapper -->
 
   </div>
   <!-- /#wrapper -->
@@ -428,7 +290,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
     </div>
   </div>
 
-  <script language="JavaScript" type="text/javascript" src="js/tables2.js"></script>
+  <script language="JavaScript" type="text/javascript" src="js/tables3.js"></script>
   <script src="js/app.js"></script>
   <script src="js/easyhttp3.js"></script>
 

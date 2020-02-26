@@ -19,7 +19,7 @@
   // Get raw posted data
   $data = json_decode(file_get_contents("php://input"));
 
-  // Set ID to update
+  // Set properties to update
   $workOrder->id = $data->id;
   $workOrder->invoice = isset($data->invoice) ? $data->invoice : '';
   $workOrder->work_order_number = isset($data->work_order_number) ? $data->work_order_number : '';
@@ -31,7 +31,7 @@
   $workOrder->serial = isset($data->serial) ? $data->serial : '';
   $workOrder->receipt_date = isset($data->receipt_date) ? $data->receipt_date : NULL;
   $workOrder->commitment_date = isset($data->commitment_date) ? $data->commitment_date : NULL;
-  $workOrder->due_date = isset($data->due_date) ? $data->due_date : NULL;
+  $workOrder->due_date = isset($data->due_date) ? $data->due_date : NULL; 
   $workOrder->description = isset($data->description) ? $data->description : '';
   $workOrder->rework = isset($data->rework) ? $data->rework : '';
   $workOrder->indicator = isset($data->indicator) ? $data->indicator : '';
@@ -44,6 +44,7 @@
 
   // Update Work order
   if($workOrder->update()) {
+    $workOrder->read_single();
     echo json_encode(
       array('message' => 'Work order updated',
             'result' => $workOrder)

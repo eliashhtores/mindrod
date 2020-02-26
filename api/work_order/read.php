@@ -13,12 +13,43 @@
   // Instantiate Work Orders object
   $workOrder = new WorkOrder($db);
 
-  // Get year and month
-  $workOrder->years = isset($_GET['years']) ? $_GET['years'] : die();
-  $workOrder->month = isset($_GET['month']) ? $_GET['month'] : die();
+  // Get year, month and row colors
+  // @@TODO make this and the one on load_totals.php on the WorkOrder Class
+  $workOrder->monthQuery = '';
+  $workOrder->rowColorQuery = '';
+  
+  if (isset($_GET['month'])) {
+    $workOrder->month = $_GET['month'];  
+    foreach($workOrder->month as &$value){
+       $value = "'$value'";
+    }
+    $workOrder->month = implode(",", $workOrder->month);
+    $workOrder->monthQuery = "AND MONTH(receipt_date) IN ($workOrder->month)";
+  }
+
+  if (isset($_GET['row_color'])) {
+    $workOrder->row_color = $_GET['row_color'];  
+    foreach($workOrder->row_color as &$value){
+       $value = "'$value'";
+    }
+    $workOrder->row_color = implode(",", $workOrder->row_color);
+    $workOrder->rowColorQuery = "AND row_color IN ($workOrder->row_color)";
+  }
+
+  $workOrder->month = isset($_GET['month']) ? $_GET['month'] : NULL;
+  $workOrder->row_color = isset($_GET['row_color']) ? $_GET['row_color'] : NULL;
+  $workOrder->year = isset($_GET['year']) ? $_GET['year'] : NULL;
 
   // Work Orders query
-  $result = $workOrder->read();
+  try {
+    $result = $workOrder->read();
+  } catch (Exception $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    echo $e->getMessage() . ' while executing: ' . $workOrder->query;
+    return;
+  }
+
+  // echo json_encode(array('result' => $workOrder));
 
   // Get row count
   $num = $result->rowCount();

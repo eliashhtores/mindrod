@@ -166,7 +166,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
         <div class="row text-center">
 
           <div class="col">
-          <table class="table table-bordered">
+          <table class="table table-striped table-bordered nowrap dataTable no-footer">
             <tbody>
               <tr>
                   <td>Cumplimiento mes</td>
@@ -235,7 +235,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
           </div>
         
           <div class="col text-mutted">
-          <table class="table table-bordered">
+          <table class="table table-striped table-bordered nowrap dataTable no-footer">
             <thead>
               <tr>
                   <th>Cantidad</th>
@@ -288,7 +288,7 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
             Ordenes de trabajo</div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <table class="table table-bordered nowrap dataTable no-footer" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                   <tr id="headers">
                 </thead>
@@ -302,14 +302,14 @@ $data = $sth->fetch(PDO::FETCH_ASSOC);
                     foreach ($attributes as $key => $value) {
                       if ($value == 'description') {
                         echo "<td>
-                        <div align='center'><button class='btn btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-description-{$result['id']}'>Ver</button></div>
+                        <div align='center'><button class='btn btn-xs btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-description-{$result['id']}'><i class='fa fa-file-o'> Ver</i></button></div>
                         <div class='collapse mt-2' id='collapse-btn-description-{$result['id']}'>
                           {$result[$attributes[$key]]}
                         </div>
                         </td>";
                       } else if ($value == 'observations') {
                         echo "<td>
-                        <div align='center'><button class='btn btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-observations-{$result['id']}'>Ver</button></div>
+                        <div align='center'><button class='btn btn-xs btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-observations-{$result['id']}'><i class='fa fa-file-o'> Ver</i></button></div>
                         <div class='collapse mt-2' id='collapse-btn-observations-{$result['id']}'>
                           {$result[$attributes[$key]]}
                         </div>
