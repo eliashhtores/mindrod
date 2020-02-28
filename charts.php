@@ -71,7 +71,7 @@ foreach ($months as $key=> $month) {
             <span>Gráficas</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="create_table2.php">
+          <a class="nav-link" href="table.php">
             <i class="fas fa-fw fa-table"></i>
             <span>Ordenes de trabajo</span></a>
         </li>

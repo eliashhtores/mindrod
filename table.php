@@ -63,7 +63,7 @@ require_once('include/auth.php');
             <span>Gráficas</span></a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="create_table2.php">
+          <a class="nav-link" href="table.php">
             <i class="fas fa-fw fa-table"></i>
             <span>Ordenes de trabajo</span></a>
         </li>
@@ -216,7 +216,6 @@ require_once('include/auth.php');
                   <th>Status</th>
                   <th>Observaciones</th>
                 </thead>
-                <!-- <tbody id="table" class="text-center"> -->
                 <tbody>
                 </tbody>
               </table>
@@ -308,7 +307,7 @@ require_once('include/auth.php');
     </div>
   </div>
 
-  <script language="JavaScript" type="text/javascript" src="js/tables3.js"></script>
+  <script language="JavaScript" type="text/javascript" src="js/table.js"></script>
   <script src="js/app.js"></script>
   <script src="js/easyhttp3.js"></script>
 

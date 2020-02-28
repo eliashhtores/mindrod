@@ -61,7 +61,7 @@ if ($_POST) {
             header("Location: dashboard.php");
             die();
           } else {
-            header("Location: create_table2.php");
+            header("Location: table.php");
             die();
           }
         }
