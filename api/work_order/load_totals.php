@@ -41,7 +41,7 @@
 
   // echo $workOrder->monthQuery;
 
-  // Get Work order
+  // Get totals
   try {
     $workOrder->load_totals();
   } catch (Exception $e) {

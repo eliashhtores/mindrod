@@ -164,14 +164,14 @@
       $userType = $this->getUserType();
 
       if ($userType === 'administrator') {    
-        $query = 'UPDATE ' . $this->table . '
+        $this->query = 'UPDATE ' . $this->table . '
         SET invoice = :invoice, work_order_number = :work_order_number, dwg_number = :dwg_number,
             description = :description, client = :client, machine = :machine, quantity = :quantity,
             serial = :serial, receipt_date = :receipt_date, commitment_date = :commitment_date,
             observations = :observations, row_color = :row_color, updated_by = :updated_by
         WHERE id = :id';
 
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($this->query);
 
         $stmt->bindParam(':invoice', $this->invoice);
         $stmt->bindParam(':work_order_number', $this->work_order_number);
@@ -189,11 +189,11 @@
         $stmt->bindParam(':id', $this->id);
 
       } else if ($userType === 'metrology') { 
-        $query = 'UPDATE ' . $this->table . '
+        $this->query = 'UPDATE ' . $this->table . '
         SET rework = :rework, observations = :observations, row_color = :row_color, updated_by = :updated_by
         WHERE id = :id';
 
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($this->query);
 
         $stmt->bindParam(':rework', $this->rework);
         $stmt->bindParam(':observations', $this->observations);
@@ -202,13 +202,13 @@
         $stmt->bindParam(':id', $this->id);
 
       } else {
-        $query = 'UPDATE ' . $this->table . '
+        $this->query = 'UPDATE ' . $this->table . '
         SET indicator = :indicator, machinist = :machinist, status = :status,
             due_date = :due_date, observations = :observations, row_color = :row_color,
             updated_by = :updated_by
         WHERE id = :id';
 
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->conn->prepare($this->query);
 
         $stmt->bindParam(':indicator', $this->indicator);
         $stmt->bindParam(':machinist', $this->machinist);

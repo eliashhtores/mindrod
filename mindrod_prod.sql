@@ -130,7 +130,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `role_id`, `username`, `password`, `name`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 4, 'admin', '*4ACFE3202A5FF5CF467898FC58AAB1D615029441', 'Global Admin', '2019-08-28 21:31:25', 1, NULL, NULL),
+(1, 1, 'admin', '*4ACFE3202A5FF5CF467898FC58AAB1D615029441', 'Global Admin', '2019-08-28 21:31:25', 1, NULL, NULL),
 (2, 1, 'administracion1', '*582C24C774AA6FD33621C458C71FCD7752B7E85F', 'Administración', '2019-08-28 21:31:40', 1, '2019-10-29 17:59:16', 1),
 (3, 1, 'administracion2', '*582C24C774AA6FD33621C458C71FCD7752B7E85F', 'Administración 2', '2019-09-13 17:37:47', 1, NULL, NULL),
 (4, 1, 'administracion3', '*582C24C774AA6FD33621C458C71FCD7752B7E85F', 'Administracion 3', '2019-09-13 17:38:29', 1, NULL, NULL),

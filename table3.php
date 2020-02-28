@@ -15,6 +15,12 @@ require_once('include/auth.php');
 
   <title>Ordenes de trabajo</title>
 
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -26,13 +32,6 @@ require_once('include/auth.php');
   <link href="css/sb-admin.css" rel="stylesheet">
 
   <link href="css/toastr.min.css" rel="stylesheet"/>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Page level plugin JavaScript-->
   <script src="vendor/datatables/jquery.dataTables.js"></script>
@@ -185,7 +184,7 @@ require_once('include/auth.php');
 
         </div>
 
-        <div class="card mb-3" id="work-orders">
+        <div class="card mb-3" id="work-orders" style="display: none;">
 
           <div class="card-header">
             <i class="fas fa-table"></i> Ordenes de trabajo
@@ -194,34 +193,33 @@ require_once('include/auth.php');
           <div class="card-body">
             <div class="table-responsive">
 
-              <table class="table table-bordered nowrap dataTable no-footer" id="dataTable" width="100%" cellspacing="0">
+              <table class="table table-bordered nowrap dataTable no-footer text-center" id="workOrderTable" width="100%" cellspacing="0">
                 <thead>
-                  <tr id="headers">
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th>No.Fact.</th>
+                  <th>No.Oc</th>
+                  <th>Folio</th>
+                  <th>Dwg</th>
+                  <th>Descripción</th>
+                  <th>Cliente</th>
+                  <th>Maquina</th>
+                  <th>Cantd</th>
+                  <th>Serie</th>
+                  <th>Recibido</th>
+                  <th>Compromiso</th>
+                  <th>Entrega</th>
+                  <th>Retrabajos</th>
+                  <th>Indic.</th>
+                  <th>Realizó Mecánico</th>
+                  <th>Status</th>
+                  <th>Observaciones</th>
                 </thead>
-                <tbody id="table" class="text-center">
-                  <tr class='item '><td><button id='58' class='btn btn-link edit_data'><i class='fa fa-pencil-square-o'></i></button></td>
-                    <td><a href='/mindrod/uploads/58.pdf' target='_blank' class='btn btn-link'><i class='fas fa-file-pdf'></i></a></td>
-                    <td><button id='58' class='btn btn-alert btn-link remove-data'><i class='fa fa-remove'></i></button></td>
-                    <td><div>Test</div></td>
-                    <td><div>123</div></td>
-                    <td><div>22</div></td>
-                    <td><div>3123</div></td>
-                    <td>
-                      <div><button class='btn btn-xs btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-description-58'>Ver</button></div>
-                      <div class='collapse mt-2' id='collapse-btn-description-58'>3123</div>
-                    </td>
-                    <td><div>21323</div></td>
-                    <td><div>2312</div></td>
-                    <td><div>2</div></td>
-                    <td><div>MIN-7884-7885</div></td>
-                    <td><div>2020-02-20</div></td><td><div>2020-02-20</div></td><td><div></div></td><td><div></div></td><td><div></div></td><td><div></div></td><td><div>0</div></td><td>
-                    <div><button class='btn btn-xs btn-primary' data-toggle='collapse' id='details' data-target='#collapse-btn-observations-58'>Ver</button></div>
-                    <div class='collapse mt-2' id='collapse-btn-observations-58'>Test</div>
-                    </td>
-                  </tr> 
+                <!-- <tbody id="table" class="text-center"> -->
+                <tbody>
                 </tbody>
               </table>
-
             </div>
           </div>
 
@@ -230,28 +228,6 @@ require_once('include/auth.php');
         </div>
       </div>
       <!-- /.container-fluid -->
-
-      <!-- UPDATE MODAL  -->
-      <div class="modal fade" id="updateModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Modificar orden de trabajo</h5>
-              <button class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-              <form method="GET" id="insert_form">
-              <div class="form-group"><label class='small' for='invoice'>No.Fact.</label><input type='text' class='form-control form-control-sm' id='invoice' name='invoice' ></div><div class="form-group"><label class='small' for='work_order_number'>No.Oc</label><input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number' ></div><div class="form-group"><label class='small' for='dwg_number'>Dwg</label><input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number' ></div><div class="form-group"><label class='small' for='description'>Descripción</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea></div><div class="form-group"><label class='small' for='client'>Cliente</label><input type='text' class='form-control form-control-sm' id='client' name='client' ></div><div class="form-group"><label class='small' for='machine'>Maquina</label><input type='text' class='form-control form-control-sm' id='machine' name='machine' ></div><div class="form-group"><label class='small' for='quantity'>Cantd</label><input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled></div><div class="form-group"><label class='small' for='serial'>Serie</label><input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled></div><div class="form-group"><label class='small' for='receipt_date'>Recibido</label><input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'></div><div class="form-group"><label class='small' for='commitment_date'>Compromiso</label><input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'></div><div class="form-group"><label class='small' for='observations'>Observaciones</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='observations' name='observations'></textarea></div><div class="form-group"><label class='small' for='row_color'>Status OC</label><select class='form-control form-control-sm' id='row_color_single' name='row_color_single'><option></option><option value="row-pink">Entregado al cliente</option><option value="row-blue">En almacén</option><option value="row-red">Cuarentena</option></select></div><div class="form-group"><label class="small" for="pdf">Archivo PDF</label><input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file"></div>                <input type="hidden" name="id" id="id" />
-                <input type="hidden" name="updated_by" id="updated_by" value="1" />
-              </div>
-              <div class="modal-footer">
-                <input type="submit" name="insert" id="insert" value="Modificar" class="btn btn-primary" />
-              </div>
-              </form>
-            </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Sticky Footer -->
     <!-- <footer class="sticky-footer">
@@ -265,6 +241,48 @@ require_once('include/auth.php');
 
   </div>
   <!-- /#wrapper -->
+
+    <!-- Update Modal  -->
+    <div class="modal fade" id="updateModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modificar orden de trabajo</h5>
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form method="GET" id="insert_form">
+            <div class="form-group"><label class='small' for='invoice'>No.Fact.</label><input type='text' class='form-control form-control-sm' id='invoice' name='invoice' ></div><div class="form-group"><label class='small' for='work_order_number'>No.Oc</label><input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number' ></div><div class="form-group"><label class='small' for='dwg_number'>Dwg</label><input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number' ></div><div class="form-group"><label class='small' for='description'>Descripción</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea></div><div class="form-group"><label class='small' for='client'>Cliente</label><input type='text' class='form-control form-control-sm' id='client' name='client' ></div><div class="form-group"><label class='small' for='machine'>Maquina</label><input type='text' class='form-control form-control-sm' id='machine' name='machine' ></div><div class="form-group"><label class='small' for='quantity'>Cantd</label><input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled></div><div class="form-group"><label class='small' for='serial'>Serie</label><input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled></div><div class="form-group"><label class='small' for='receipt_date'>Recibido</label><input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'></div><div class="form-group"><label class='small' for='commitment_date'>Compromiso</label><input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'></div><div class="form-group"><label class='small' for='observations'>Observaciones</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='observations' name='observations'></textarea></div><div class="form-group"><label class='small' for='row_color'>Status OC</label><select class='form-control form-control-sm' id='row_color_single' name='row_color_single'><option></option><option value="row-pink">Entregado al cliente</option><option value="row-blue">En almacén</option><option value="row-red">Cuarentena</option></select></div><div class="form-group"><label class="small" for="pdf">Archivo PDF</label><input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file"></div>                <input type="hidden" name="id" id="id" />
+              <input type="hidden" name="updated_by" id="updated_by" value="1" />
+            </div>
+            <div class="modal-footer">
+              <input type="submit" name="insert" id="insert" value="Modificar" class="btn btn-primary" />
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Modal  -->
+    <div class="modal" id="confirmModal" style="display: none;" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Borrar orden de trabajo</h5>
+            <button class="close" data-dismiss="modal">×</button>
+          </div>
+          <div class="modal-body">¿Desea borrar esta orden de trabajo?</div>
+          <div class="container">
+            <div class="d-flex row-hl">   
+              <div class="mr-auto item-hl"><button class="btn btn-primary" id="yes" data-dismiss="modal">Borrar</button></div>
+              <div class="item-hl"><button class="btn btn-secondary" id="no" data-dismiss="modal">Cancelar</button></div>
+            </div>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">

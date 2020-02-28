@@ -43,14 +43,18 @@
   $workOrder->updated_by = $_SESSION['id'];
 
   // Update Work order
-  if($workOrder->update()) {
-    $workOrder->read_single();
-    echo json_encode(
-      array('message' => 'Work order updated',
-            'result' => $workOrder)
-    );
-  } else {
-    echo json_encode(
-      array('message' => 'Work order not updated')
-    );
-  }
+  try {
+    $workOrder->update();
+  } catch (Exception $e) {
+    header("HTTP/1.1 500 Internal Server Error");
+    echo $e->getMessage() . ' while executing: ' . $workOrder->query;
+    return;
+  } 
+
+  $workOrder->read_single();
+  echo json_encode(
+    array('message' => 'Work order updated',
+          'spanish' => 'Orden de trabajo actualizada.',
+          'result' => $workOrder)
+  );
+ 

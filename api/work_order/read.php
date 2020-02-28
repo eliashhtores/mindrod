@@ -13,8 +13,7 @@
   // Instantiate Work Orders object
   $workOrder = new WorkOrder($db);
 
-  // Get year, month and row colors
-  // @@TODO make this and the one on load_totals.php on the WorkOrder Class
+  // Get year, months and row colors
   $workOrder->monthQuery = '';
   $workOrder->rowColorQuery = '';
   
@@ -57,7 +56,9 @@
   // Check if any work orders
   if($num > 0) {
     // Work Order array
-    $workOrders_arr = array();
+    $workOrders_arr = [];
+    // Result array
+    $data = [];
 
     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
       extract($row);
@@ -84,12 +85,14 @@
         'row_color' => $row_color
       );
 
-      // Push to "data"
+      // Push to Work Order array
       array_push($workOrders_arr, $workOrder_item);
     }
 
+    $data = ['data' => $workOrders_arr]; 
+
     // Turn to JSON & output
-    echo json_encode($workOrders_arr);
+    echo json_encode($data);
 
   } else {
     // No Work Orders 

@@ -33,6 +33,7 @@
   }
 
     echo json_encode(
-      array('message' => 'Work order updated',
+      array('message' => 'Work order deactivated.',
+            'spanish' => 'Orden de trabajo borrada',
             'result' => $workOrder)
       );
