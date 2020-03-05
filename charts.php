@@ -101,24 +101,13 @@ foreach ($months as $key=> $month) {
           <li class="breadcrumb-item active">Gráficas</li>
         </ol>
 
-        <!-- Area Chart Example-->
-        <!-- <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-chart-area"></i>
-            Area Chart Example</div>
-          <div class="card-body">
-            <canvas id="myAreaChart" width="100%" height="30"></canvas>
-          </div>
-          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-        </div> -->
-
         <div class="row">
           <div class="col-lg-8">
             <div class="card mb-3">
               <div class="card-header">
                 Objetivo 1. No rebasar el 10% de Re-trabajos mensual.
                 <br> 
-                (Produccion) 2019
+                (Produccion) <?php echo $year ?>
                 </div>
               <div class="card-body">
                 <canvas id="reworks" width="100%" height="50"></canvas>
@@ -187,7 +176,7 @@ foreach ($months as $key=> $month) {
               <div class="card-header">
                 Objetivo 1. No rebasar el 5% de entregas fuera de tiempo.
                 <br> 
-                (Produccion) 2019
+                (Produccion) <?php echo $year ?>
                 </div>
               <div class="card-body">
                 <canvas id="out_of_time" width="100%" height="50"></canvas>
