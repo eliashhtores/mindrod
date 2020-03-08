@@ -29,12 +29,12 @@
     // Update serial
     public function update() {
         $query = 'UPDATE ' . $this->table . '
-        SET latest_serial = :quantity + latest_serial';
+        SET latest_serial = ? + latest_serial';
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':quantity', $this->quantity);
+
         // Execute query
-        if($stmt->execute()) {
+        if($stmt->execute($this->quantity)) {
             return true;
         }
 

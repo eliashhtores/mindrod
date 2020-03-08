@@ -36,7 +36,7 @@
     // Get work orders 
     public function read() {
       // Create query
-      $this->query = "SELECT * FROM $this->table WHERE YEAR(receipt_date) = $this->year
+      $this->query = "SELECT * FROM $this->table WHERE YEAR(receipt_date) = ?
       $this->monthQuery
       $this->rowColorQuery
       AND status >= 0";
@@ -45,7 +45,7 @@
       $stmt = $this->conn->prepare($this->query);
 
       // Execute query
-      $stmt->execute([$this->years, $this->month]);
+      $stmt->execute([$this->year]);
 
       return $stmt;
     }
@@ -95,7 +95,7 @@
         AVG(status) AS average,
         COUNT(*) AS total
         FROM $this->table
-        WHERE YEAR(receipt_date) = $this->year
+        WHERE YEAR(receipt_date) = ?
           $this->monthQuery
           $this->rowColorQuery
           AND status >= 0";
@@ -104,7 +104,7 @@
       $stmt = $this->conn->prepare($this->query);
 
       // Execute query
-      $stmt->execute();
+      $stmt->execute([$this->year]);
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
       // Set properties
@@ -119,17 +119,14 @@
     // Deactivate single work order
     public function deactivate_work_order() {
       // Deactivate query
-      $this->query = 'UPDATE work_order SET status = -1, updated_by = :updated_by
-        WHERE id = :id';
+      $this->query = 'UPDATE work_order SET status = -1, updated_by = ?
+        WHERE id = ?';
 
       // Prepare statement
       $stmt = $this->conn->prepare($this->query);
 
-      $stmt->bindParam(':updated_by', $this->updated_by);
-      $stmt->bindParam(':id', $this->id);
-
       // Execute query
-      if($stmt->execute()) {
+      if($stmt->execute([$this->updated_by, $this->id])) {
         return true;
       }
       
@@ -145,6 +142,8 @@
 
     // Update Work order
     public function update() {
+      $params = array();
+
       // Clean data
       $this->invoice = $this->cleanData($this->invoice);
       $this->work_order_number = $this->cleanData($this->work_order_number);
@@ -165,63 +164,37 @@
 
       if ($userType === 'administrator') {    
         $this->query = 'UPDATE ' . $this->table . '
-        SET invoice = :invoice, work_order_number = :work_order_number, dwg_number = :dwg_number,
-            description = :description, client = :client, machine = :machine, quantity = :quantity,
-            serial = :serial, receipt_date = :receipt_date, commitment_date = :commitment_date,
-            observations = :observations, row_color = :row_color, updated_by = :updated_by
-        WHERE id = :id';
-
-        $stmt = $this->conn->prepare($this->query);
-
-        $stmt->bindParam(':invoice', $this->invoice);
-        $stmt->bindParam(':work_order_number', $this->work_order_number);
-        $stmt->bindParam(':dwg_number', $this->dwg_number);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':client', $this->client);
-        $stmt->bindParam(':machine', $this->machine);
-        $stmt->bindParam(':quantity', $this->quantity);
-        $stmt->bindParam(':serial', $this->serial);
-        $stmt->bindParam(':receipt_date', $this->receipt_date);
-        $stmt->bindParam(':commitment_date', $this->commitment_date);
-        $stmt->bindParam(':observations', $this->observations);
-        $stmt->bindParam(':row_color', $this->row_color);
-        $stmt->bindParam(':updated_by', $this->updated_by);
-        $stmt->bindParam(':id', $this->id);
+        SET invoice = ?, work_order_number = ?, dwg_number = ?,
+            description = ?, client = ?, machine = ?, quantity = ?,
+            serial = ?, receipt_date = ?, commitment_date = ?,
+            observations = ?, row_color = ?, updated_by = ?
+        WHERE id = ?';
+        
+        $params = [$this->invoice, $this->work_order_number, $this->dwg_number, $this->description, $this->client, $this->machine, $this->quantity, 
+        $this->serial, $this->receipt_date, $this->commitment_date, $this->observations, $this->row_color, $this->updated_by, $this->id];
 
       } else if ($userType === 'metrology') { 
         $this->query = 'UPDATE ' . $this->table . '
-        SET rework = :rework, observations = :observations, row_color = :row_color, updated_by = :updated_by
-        WHERE id = :id';
+        SET rework = ?, observations = ?, row_color = ?, updated_by = ?
+        WHERE id = ?';
 
-        $stmt = $this->conn->prepare($this->query);
-
-        $stmt->bindParam(':rework', $this->rework);
-        $stmt->bindParam(':observations', $this->observations);
-        $stmt->bindParam(':row_color', $this->row_color);
-        $stmt->bindParam(':updated_by', $this->updated_by);
-        $stmt->bindParam(':id', $this->id);
+        $params = [$this->rework, $this->observations, $this->row_color, $this->updated_by, $this->id];
 
       } else {
         $this->query = 'UPDATE ' . $this->table . '
-        SET indicator = :indicator, machinist = :machinist, status = :status,
-            due_date = :due_date, observations = :observations, row_color = :row_color,
-            updated_by = :updated_by
-        WHERE id = :id';
+        SET indicator = ?, machinist = ?, status = ?,
+            due_date = ?, observations = ?, row_color = ?,
+            updated_by = ?
+        WHERE id = ?';
 
-        $stmt = $this->conn->prepare($this->query);
-
-        $stmt->bindParam(':indicator', $this->indicator);
-        $stmt->bindParam(':machinist', $this->machinist);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':due_date', $this->due_date);
-        $stmt->bindParam(':observations', $this->observations);
-        $stmt->bindParam(':row_color', $this->row_color);
-        $stmt->bindParam(':updated_by', $this->updated_by);
-        $stmt->bindParam(':id', $this->id);
+        $params = [$this->indicator, $this->machinist, $this->status, $this->due_date, $this->observations, $this->row_color, $this->updated_by, $this->id];
       }
 
+      // Prepare statement
+      $stmt = $this->conn->prepare($this->query);
+
       // Execute query
-      if($stmt->execute()) {
+      if($stmt->execute($params)) {
           return true;
       }
 
@@ -232,11 +205,12 @@
 
     // Create work order
     public function create() {
+      $params = array();
       // Create query
-      $this->query = 'INSERT INTO ' . $this->table . ' SET invoice = :invoice, work_order_number = :work_order_number, folio = :folio, dwg_number = :dwg_number,
-      description = :description, client = :client, machine = :machine, quantity = :quantity,
-      serial = :serial, receipt_date = :receipt_date, commitment_date = :commitment_date, observations = :observations,
-      created_by = :created_by';
+      $this->query = 'INSERT INTO ' . $this->table . ' SET invoice = ?, work_order_number = ?, folio = ?, dwg_number = ?,
+      description = ?, client = ?, machine = ?, quantity = ?,
+      serial = ?, receipt_date = ?, commitment_date = ?, observations = ?,
+      created_by = ?';
 
       // Prepare statement
       $stmt = $this->conn->prepare($this->query);
@@ -257,23 +231,11 @@
       $this->invoice = $this->cleanData($this->invoice);
       $folio = $this->getFolio();
 
-      // Bind data
-      $stmt->bindParam(':invoice', $this->invoice);
-      $stmt->bindParam(':work_order_number', $this->work_order_number);
-      $stmt->bindParam(':folio', $folio);
-      $stmt->bindParam(':dwg_number', $this->dwg_number);
-      $stmt->bindParam(':description', $this->description);
-      $stmt->bindParam(':client', $this->client);
-      $stmt->bindParam(':machine', $this->machine);
-      $stmt->bindParam(':quantity', $this->quantity);
-      $stmt->bindParam(':serial', $this->serial);
-      $stmt->bindParam(':receipt_date', $this->receipt_date);
-      $stmt->bindParam(':commitment_date', $this->commitment_date);
-      $stmt->bindParam(':observations', $this->observations);
-      $stmt->bindParam(':created_by', $this->created_by);
+      $params = [$this->invoice, $this->work_order_number, $folio, $this->dwg_number, $this->description, $this->client, $this->machine, 
+      $this->quantity, $this->serial, $this->receipt_date, $this->commitment_date, $this->observations, $this->created_by];
 
       // Execute query
-      if($stmt->execute()) {
+      if($stmt->execute($params)) {
         $this->updateSerial();
         $this->setFolio();
         return true;
@@ -288,10 +250,13 @@
       $query = "SELECT description
       FROM role
       JOIN user ON (user.role_id = role.id)
-      WHERE user.id = '$this->updated_by'";
+      WHERE user.id = ?";
+
       $stmt = $this->conn->prepare($query);
-      $stmt->execute();
+      
+      $stmt->execute([$this->updated_by]);
       $description = $stmt->fetch();
+
       return $description[0];
     }
 
@@ -312,12 +277,11 @@
     // Update serial
     public function updateSerial() {
       $query = 'UPDATE serial
-      SET latest_serial = :quantity + latest_serial';
+      SET latest_serial = ? + latest_serial';
 
       $stmt = $this->conn->prepare($query);
-      $stmt->bindParam(':quantity', $this->quantity);
       // Execute query
-      if($stmt->execute()) {
+      if($stmt->execute([$this->quantity])) {
           return true;
       }
 

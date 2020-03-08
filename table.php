@@ -137,6 +137,7 @@ require_once('include/auth.php');
               </div>
 
               <div class="row mt-2">
+                
                 <label class='small' for='row_color'>Status</label>
                 <select class='form-control form-control-sm' multiple id='row_color' name="row_color[]" size="9">
                 <option value='row-pink' >Entregado al cliente</option><option value='row-blue' >En almacén</option><option value='row-red' >Cuarentena</option>                </select>
@@ -221,7 +222,8 @@ require_once('include/auth.php');
               </table>
             </div>
           </div>
-
+          
+          <!-- @TODO Fix lastUpdate to be dynamic -->
           <div class="card-footer small text-muted" id="lastUpdate">Última actualización 2020-02-20 11:34:45</div>
         </div>
         </div>
@@ -241,6 +243,7 @@ require_once('include/auth.php');
   </div>
   <!-- /#wrapper -->
 
+    <!-- @TODO Fix modal to present inputs based on the user type -->
     <!-- Update Modal  -->
     <div class="modal fade" id="updateModal">
       <div class="modal-dialog">
@@ -251,12 +254,83 @@ require_once('include/auth.php');
           </div>
           <div class="modal-body">
             <form method="GET" id="insert_form">
-            <div class="form-group"><label class='small' for='invoice'>No.Fact.</label><input type='text' class='form-control form-control-sm' id='invoice' name='invoice' ></div><div class="form-group"><label class='small' for='work_order_number'>No.Oc</label><input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number' ></div><div class="form-group"><label class='small' for='dwg_number'>Dwg</label><input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number' ></div><div class="form-group"><label class='small' for='description'>Descripción</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea></div><div class="form-group"><label class='small' for='client'>Cliente</label><input type='text' class='form-control form-control-sm' id='client' name='client' ></div><div class="form-group"><label class='small' for='machine'>Maquina</label><input type='text' class='form-control form-control-sm' id='machine' name='machine' ></div><div class="form-group"><label class='small' for='quantity'>Cantd</label><input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled></div><div class="form-group"><label class='small' for='serial'>Serie</label><input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled></div><div class="form-group"><label class='small' for='receipt_date'>Recibido</label><input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'></div><div class="form-group"><label class='small' for='commitment_date'>Compromiso</label><input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'></div><div class="form-group"><label class='small' for='observations'>Observaciones</label><textarea rows='2' cols='45' class='form-control form-control-sm' id='observations' name='observations'></textarea></div><div class="form-group"><label class='small' for='row_color'>Status OC</label><select class='form-control form-control-sm' id='row_color_single' name='row_color_single'><option></option><option value="row-pink">Entregado al cliente</option><option value="row-blue">En almacén</option><option value="row-red">Cuarentena</option></select></div><div class="form-group"><label class="small" for="pdf">Archivo PDF</label><input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file"></div>                <input type="hidden" name="id" id="id" />
-              <input type="hidden" name="updated_by" id="updated_by" value="1" />
-            </div>
-            <div class="modal-footer">
-              <input type="submit" name="insert" id="insert" value="Modificar" class="btn btn-primary" />
-            </div>
+              <div class="form-group">
+                <label class='small' for='invoice'>No.Fact.</label>
+                <input type='text' class='form-control form-control-sm' id='invoice' name='invoice'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='work_order_number'>No.Oc</label>
+                <input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='dwg_number'>Dwg</label>
+                <input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='description'>Descripción</label>
+                <textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea>
+              </div>
+              <div class="form-group">
+                <label class='small' for='client'>Cliente</label>
+                <input type='text' class='form-control form-control-sm' id='client' name='client'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='machine'>Maquina</label>
+                <input type='text' class='form-control form-control-sm' id='machine' name='machine'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='quantity'>Cantd</label>
+                <input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled>
+              </div>
+              <div class="form-group">
+                <label class='small' for='serial'>Serie</label>
+                <input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled>
+              </div>
+              <div class="form-group">
+                <label class='small' for='receipt_date'>Recibido</label>
+                <input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='commitment_date'>Compromiso</label>
+                <input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'>
+              </div>
+              <div class="form-group">
+                <label class='small' for='commitment_date'>Entrega</label>
+                <input type='date' class='form-control form-control-sm' id='due_date' name='due_date'>
+              </div>
+              <div class="form-group">
+                <label class="small" for="indicator">Indic.</label>
+                <input type="text" class="form-control form-control-sm" id="indicator" name="indicator">
+              </div>
+              <div class="form-group">
+                <label class="small" for="machinist">Realizó Mecánico</label>
+                <input type="text" class="form-control form-control-sm" id="machinist" name="machinist">
+              </div>
+              <div class="form-group">
+                <label class="small" for="status">Status</label>
+                <input type="number" class="form-control form-control-sm w-25" min="0" id="status" name="status">
+              </div>
+              <div class="form-group">
+                <label class='small' for='rework'>Retrabajo</label>
+                <select class='form-control form-control-sm' id='rework' name='rework'>";
+                  <option></option>
+                  <option value="R">Sí</option>
+                </select>
+              <div class="form-group">
+                <label class='small' for='observations'>Observaciones</label>
+                <textarea rows='2' cols='45' class='form-control form-control-sm' id='observations' name='observations'></textarea>
+              </div>
+              <div class="form-group">
+                <label class='small' for='row_color'>Status OC</label>
+                <select class='form-control form-control-sm' id='row_color_single' name='row_color_single'><option></option><option value="row-pink">Entregado al cliente</option><option value="row-blue">En almacén</option><option value="row-red">Cuarentena</option></select></div><div class="form-group">
+                <label class="small" for="pdf">Archivo PDF</label>
+                <input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file"></div>                
+                <input type="hidden" name="id" id="id" />
+                <input type="hidden" name="updated_by" id="updated_by" value="1" />
+              </div>
+              <div class="modal-footer">
+                <input type="submit" name="insert" id="insert" value="Modificar" class="btn btn-primary" />
+              </div>
             </form>
           </div>
         </div>
@@ -274,8 +348,8 @@ require_once('include/auth.php');
           <div class="modal-body">¿Desea borrar esta orden de trabajo?</div>
           <div class="container">
             <div class="d-flex row-hl">   
-              <div class="mr-auto item-hl"><button class="btn btn-primary" id="yes" data-dismiss="modal">Borrar</button></div>
-              <div class="item-hl"><button class="btn btn-secondary" id="no" data-dismiss="modal">Cancelar</button></div>
+              <div class="mr-auto item-hl"><button class="btn btn-secondary" id="no" data-dismiss="modal">Cancelar</button></div>
+              <div class="item-hl"><button class="btn btn-primary" id="yes" data-dismiss="modal">Borrar</button></div>
             </div>
           </div>
           <br>
