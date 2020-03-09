@@ -15,7 +15,7 @@
   --indigo: #6610f2;
   --purple: #6f42c1;
   --pink: #e83e8c;
-  --red: #c40000;
+  --red: #6b0101;
   --orange: #fd7e14;
   --yellow: #ffc107;
   --green: #28a745;
@@ -42,15 +42,21 @@
 }
 
 .row-pink {
-  background-color: var(--pink)
+  background-color: var(--pink);
+  color: #721c24;
+  border-color: #f5c6cb;
 }
 
 .row-blue {
-  background-color: var(--blue)
+  background-color: lightskyblue;
+  color: #004085;
+  border-color: #b8daff;
 }
 
 .row-red {
-  background-color: var(--red)
+  background-color: #dc3545;
+  color:  var(--red);
+  border-color: #410000;
 }
 
 *,
