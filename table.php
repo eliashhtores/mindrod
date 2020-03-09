@@ -1,7 +1,3 @@
-<?php
-require_once('include/connect.php');
-require_once('include/auth.php');
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,12 +43,12 @@ require_once('include/auth.php');
     <div class="container">
 
     <!-- Get the role id to find out if the link will be displayed -->
-      <a class='navbar-brand mr-1' href='dashboard.php'>MINDROD</a>
+      <a class='navbar-brand mr-1' href='#'>MINDROD</a>
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item">
           <!-- Get the role id to find out if the link will be displayed -->
-          <a class="nav-link" href="dashboard.php">
+          <a class="nav-link" id="dashboard">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Administración</span>
           </a>
@@ -65,11 +61,13 @@ require_once('include/auth.php');
         <li class="nav-item active">
           <a class="nav-link" href="table.php">
             <i class="fas fa-fw fa-table"></i>
-            <span>Ordenes de trabajo</span></a>
+            <span>Ordenes de trabajo</span>
+          </a>
         </li>
         <li class="nav-item dropdown no-arrow">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-user-circle fa-fw"></i>
+            <small><span id="user"></span></small>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Salir</a>
@@ -117,7 +115,6 @@ require_once('include/auth.php');
                   <option  value='2019'>2019</option><option selected='selected' value='2020'>2020</option>
                 </select>
               </div>
-
               <div class="row mt-2">
                 <select class="form-control" multiple id="month" name="month[]" size="9">
                   <option value='1' >Enero</option>
@@ -135,9 +132,7 @@ require_once('include/auth.php');
                 </select>
                 <small class="form-text text-muted">Control + click para seleccionar o deseleccionar</small>
               </div>
-
               <div class="row mt-2">
-                
                 <label class='small' for='row_color'>Status</label>
                 <select class='form-control form-control-sm' multiple id='row_color' name="row_color[]" size="9">
                 <option value='row-pink' >Entregado al cliente</option><option value='row-blue' >En almacén</option><option value='row-red' >Cuarentena</option>                </select>
@@ -223,8 +218,7 @@ require_once('include/auth.php');
             </div>
           </div>
           
-          <!-- @TODO Fix lastUpdate to be dynamic -->
-          <div class="card-footer small text-muted" id="lastUpdate">Última actualización 2020-02-20 11:34:45</div>
+          <div class="card-footer small text-muted">Última actualización <span id="lastUpdate"></span></div>
         </div>
         </div>
       </div>
@@ -243,7 +237,6 @@ require_once('include/auth.php');
   </div>
   <!-- /#wrapper -->
 
-    <!-- @TODO Fix modal to present inputs based on the user type -->
     <!-- Update Modal  -->
     <div class="modal fade" id="updateModal">
       <div class="modal-dialog">
@@ -254,68 +247,75 @@ require_once('include/auth.php');
           </div>
           <div class="modal-body">
             <form method="GET" id="insert_form">
-              <div class="form-group">
-                <label class='small' for='invoice'>No.Fact.</label>
-                <input type='text' class='form-control form-control-sm' id='invoice' name='invoice'>
+              <div id="administrator">
+                <div class="form-group">
+                  <label class='small' for='invoice'>No.Fact.</label>
+                  <input type='text' class='form-control form-control-sm' id='invoice' name='invoice'>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='work_order_number'>No.Oc</label>
+                  <input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number'>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='dwg_number'>Dwg</label>
+                  <input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number'>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='description'>Descripción</label>
+                  <textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='client'>Cliente</label>
+                  <input type='text' class='form-control form-control-sm' id='client' name='client'>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='machine'>Maquina</label>
+                  <input type='text' class='form-control form-control-sm' id='machine' name='machine'>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='quantity'>Cantd</label>
+                  <input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='serial'>Serie</label>
+                  <input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='receipt_date'>Recibido</label>
+                  <input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'>
+                </div>
+                <div class="form-group">
+                  <label class='small' for='commitment_date'>Compromiso</label>
+                  <input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'>
+                </div>
               </div>
-              <div class="form-group">
-                <label class='small' for='work_order_number'>No.Oc</label>
-                <input type='text' class='form-control form-control-sm' id='work_order_number' name='work_order_number'>
+              <div id="warehouse" class="d-none">
+                <div class="form-group">
+                  <label class='small' for='commitment_date'>Entrega</label>
+                  <input type='date' class='form-control form-control-sm' id='due_date' name='due_date'>
+                </div>
+                <div class="form-group">
+                  <label class="small" for="indicator">Indic.</label>
+                  <input type="text" class="form-control form-control-sm" id="indicator" name="indicator">
+                </div>
+                <div class="form-group">
+                  <label class="small" for="machinist">Realizó Mecánico</label>
+                  <input type="text" class="form-control form-control-sm" id="machinist" name="machinist">
+                </div>
+                <div class="form-group">
+                  <label class="small" for="status">Status</label>
+                  <input type="number" class="form-control form-control-sm w-25" min="0" id="status" name="status">
+                </div>
               </div>
-              <div class="form-group">
-                <label class='small' for='dwg_number'>Dwg</label>
-                <input type='text' class='form-control form-control-sm' id='dwg_number' name='dwg_number'>
+              <div id="metrology" class="d-none">
+                <div class="form-group">
+                  <label class='small' for='rework'>Retrabajo</label>
+                  <select class='form-control form-control-sm' id='rework' name='rework'>";
+                    <option></option>
+                    <option value="R">Sí</option>
+                  </select>
+                </div>
               </div>
-              <div class="form-group">
-                <label class='small' for='description'>Descripción</label>
-                <textarea rows='2' cols='45' class='form-control form-control-sm' id='description' name='description'></textarea>
-              </div>
-              <div class="form-group">
-                <label class='small' for='client'>Cliente</label>
-                <input type='text' class='form-control form-control-sm' id='client' name='client'>
-              </div>
-              <div class="form-group">
-                <label class='small' for='machine'>Maquina</label>
-                <input type='text' class='form-control form-control-sm' id='machine' name='machine'>
-              </div>
-              <div class="form-group">
-                <label class='small' for='quantity'>Cantd</label>
-                <input type='number' class='form-control form-control-sm w-25' min=0 id='quantity' name='quantity' disabled>
-              </div>
-              <div class="form-group">
-                <label class='small' for='serial'>Serie</label>
-                <input type='text' class='form-control form-control-sm' id='serial' name='serial' disabled>
-              </div>
-              <div class="form-group">
-                <label class='small' for='receipt_date'>Recibido</label>
-                <input type='date' class='form-control form-control-sm' id='receipt_date' name='receipt_date'>
-              </div>
-              <div class="form-group">
-                <label class='small' for='commitment_date'>Compromiso</label>
-                <input type='date' class='form-control form-control-sm' id='commitment_date' name='commitment_date'>
-              </div>
-              <div class="form-group">
-                <label class='small' for='commitment_date'>Entrega</label>
-                <input type='date' class='form-control form-control-sm' id='due_date' name='due_date'>
-              </div>
-              <div class="form-group">
-                <label class="small" for="indicator">Indic.</label>
-                <input type="text" class="form-control form-control-sm" id="indicator" name="indicator">
-              </div>
-              <div class="form-group">
-                <label class="small" for="machinist">Realizó Mecánico</label>
-                <input type="text" class="form-control form-control-sm" id="machinist" name="machinist">
-              </div>
-              <div class="form-group">
-                <label class="small" for="status">Status</label>
-                <input type="number" class="form-control form-control-sm w-25" min="0" id="status" name="status">
-              </div>
-              <div class="form-group">
-                <label class='small' for='rework'>Retrabajo</label>
-                <select class='form-control form-control-sm' id='rework' name='rework'>";
-                  <option></option>
-                  <option value="R">Sí</option>
-                </select>
               <div class="form-group">
                 <label class='small' for='observations'>Observaciones</label>
                 <textarea rows='2' cols='45' class='form-control form-control-sm' id='observations' name='observations'></textarea>
@@ -375,13 +375,13 @@ require_once('include/auth.php');
         <div class="modal-body">Seleccione "Salir" si está listo para terminar su sesión</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-          <a class="btn btn-primary" href="index.php">Salir</a>
+          <a class="btn btn-primary" href="index.php" id="exit">Salir</a>
         </div>
       </div>
     </div>
   </div>
 
-  <script language="JavaScript" type="text/javascript" src="js/table.js"></script>
+  <script src="js/table.js"></script>
   <script src="js/app.js"></script>
   <script src="js/easyhttp3.js"></script>
 

@@ -27,6 +27,7 @@
     public $monthQuery;
     public $rowColorQuery;
     public $query;
+    public $last_update;
 
     // Constructor with DB
     public function __construct($db) {
@@ -116,6 +117,22 @@
       $this->total = $row['total'];
     }
 
+    // Get totals
+    public function last_update() {
+      // Create query
+      $this->query = "SELECT MAX(updated_at) AS updated_at FROM $this->table";
+
+      // Prepare statement
+      $stmt = $this->conn->prepare($this->query);
+
+      // Execute query
+      $stmt->execute();
+      $row = $stmt->fetch();
+
+      // Set properties
+      $this->last_update = $row[0];
+    }    
+
     // Deactivate single work order
     public function deactivate_work_order() {
       // Deactivate query
@@ -160,7 +177,7 @@
       $this->observations = $this->cleanData($this->observations);
       $this->row_color = $this->cleanData($this->row_color);
 
-      $userType = $this->getUserType();
+      $userType = $this->getUserType($this->updated_by);
 
       if ($userType === 'administrator') {    
         $this->query = 'UPDATE ' . $this->table . '
@@ -227,7 +244,6 @@
       $this->receipt_date = $this->cleanData($this->receipt_date);
       $this->commitment_date = $this->cleanData($this->commitment_date);
       $this->observations = $this->cleanData($this->observations);
-      $this->created_by = $this->cleanData($this->created_by);
       $this->invoice = $this->cleanData($this->invoice);
       $folio = $this->getFolio();
 

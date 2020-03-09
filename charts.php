@@ -1,12 +1,10 @@
+<!-- @TODO Move to MVC -->
 <?php
 require_once('include/connect.php');
-require_once('include/auth.php');
 ini_set('session.gc_maxlifetime', 360000);
 session_set_cookie_params(360000);
 session_start();
 
-//$year = $_POST['years'];
-// $month = (int)$_POST['month'];
 $year = date('Y');
 $link = "#";
 $months = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
@@ -54,13 +52,13 @@ foreach ($months as $key=> $month) {
         if ($_SESSION['role_id'] == 1) {
           $link = "dashboard.php";
         }
-        echo "<a class='navbar-brand mr-1' href='$link'>MINDROD</a>";
+        echo "<a class='navbar-brand mr-1' href='#'>MINDROD</a>";
       ?>
 
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item">
-          <a class="nav-link" href="<?php echo $link; ?>">
+          <a class="nav-link" id="dashboard">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Administración</span>
           </a>
@@ -78,6 +76,7 @@ foreach ($months as $key=> $month) {
         <li class="nav-item dropdown no-arrow">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-user-circle fa-fw"></i>
+            <small><span id="user"></span></small>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Salir</a>
@@ -270,7 +269,7 @@ foreach ($months as $key=> $month) {
         <div class="modal-body">Seleccione "Salir" si está listo para terminar su sesión</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-          <a class="btn btn-primary" href="index.php">Salir</a>
+          <a class="btn btn-primary" href="index.php" id="exit">Salir</a>
         </div>
       </div>
     </div>

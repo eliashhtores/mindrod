@@ -7,7 +7,6 @@
 
   include_once '../../config/Database.php';
   include_once '../../models/WorkOrder.php';
-  require_once('../../include/auth.php');
 
   // Instantiate DB & connect
   $database = new Database();
@@ -21,7 +20,7 @@
 
   // Set ID to update
   $workOrder->id = $data->id;
-  $workOrder->updated_by = $_SESSION['id'];
+  $workOrder->updated_by = $data->updated_by;
 
   // Update Work orde
   try {

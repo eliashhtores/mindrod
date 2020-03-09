@@ -21,57 +21,14 @@
 
 <body class="bg-dark">
 
-<?php
-
-require_once('include/connect.php');
-require_once('include/Session.php');
-
-$username = isset($_POST['username']) ? $_POST['username'] : '';
-$password = isset($_POST['password']) ? $_POST['password'] : '';
-$result = '';
-
-if ($_POST) {
-  $sth = $dbh->query("
-  SELECT id, username, role_id FROM user
-    WHERE username = '$username'
-      AND password = PASSWORD('$password')"
-  );
-  $result = $sth->fetch();
-}
-?>
-
   <div class="container">
     <div class="card card-login mx-auto mt-5">
-    <?php
-    if ($result === FALSE && !empty($username) && !empty($password)) {
-    ?>
-      <div class="alert alert-danger alert-dismissable w-100">
-        <button class="close" type="button" data-dismiss="alert">
-          <span>&times;</span>
-        </button>
+      <div class="alert alert-danger alert-dismissable w-100 d-none" id="login-error">
         <strong>¡Error!</strong> Favor de verificar su usuario, contraseña y que su cuenta esté activa en el sistema
       </div>
-    <?php
-    }
-    else {
-      if (isset($sth)) {
-        if($sth->rowCount() > 0) {
-          $session = new Session($result['id'], $username, $result['role_id']);
-          if ($result['role_id'] == 1) {
-            header("Location: dashboard.php");
-            die();
-          } else {
-            header("Location: table.php");
-            die();
-          }
-        }
-      }
-    }
-
-    ?>
       <div class="card-header">Acceso</div>
       <div class="card-body">
-        <form action="index.php" method="POST">
+        <form action="index.php" method="GET">
           <div class="form-group">
             <div class="form-label-group">
               <input type="text" id="username" name="username" class="form-control" placeholder="Usuario" required="required" autofocus="autofocus">
@@ -84,11 +41,13 @@ if ($_POST) {
               <label for="password">Contraseña</label>
             </div>
           </div>
-          <input type="submit" value="Ingresar" class="btn btn-primary btn-block">
+          <input type="submit" value="Ingresar" id="login" class="btn btn-primary btn-block">
         </form>
       </div>
     </div>
   </div>
+
+  <script src="js/index.js"></script>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>

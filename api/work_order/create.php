@@ -3,11 +3,10 @@
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
   header('Access-Control-Allow-Methods: POST');
-  header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,Access-Control-Allow-Methods, Authorization, X-Requested-With');
+  header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
   include_once '../../config/Database.php';
   include_once '../../models/WorkOrder.php';
-  require_once('../../include/auth.php');
 
   // Instantiate DB & connect
   $database = new Database();
@@ -30,7 +29,7 @@
   $workOrder->receipt_date = $data->receipt_date;
   $workOrder->commitment_date = $data->commitment_date;
   $workOrder->observations = $data->observations;
-  $workOrder->created_by = $user_id = $_SESSION['id'];
+  $workOrder->created_by = $data->created_by;
 
   // Create work order
   try {

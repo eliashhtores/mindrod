@@ -7,7 +7,7 @@
 
   include_once '../../config/Database.php';
   include_once '../../models/WorkOrder.php';
-  require_once('../../include/auth.php');
+  // require_once('../../include/auth.php');
 
   // Instantiate DB & connect
   $database = new Database();
@@ -40,7 +40,7 @@
   $workOrder->observations = isset($data->observations) ? $data->observations : '';
   $workOrder->row_color = isset($data->row_color_single) ? $data->row_color_single : '';
   $workOrder->pdf = isset($data->pdf) ? $data->pdf : '';
-  $workOrder->updated_by = $_SESSION['id'];
+  $workOrder->updated_by = isset($data->updated_by) ? $data->updated_by : '';
 
   // Update Work order
   try {

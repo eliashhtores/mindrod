@@ -4,7 +4,7 @@
     private $conn;
     private $table = 'serial';
 
-    // Serial order properties
+    // Serial properties
     public $quantity;
 
     // Constructor with DB

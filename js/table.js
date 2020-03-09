@@ -1,3 +1,5 @@
+session = JSON.parse(localStorage.getItem("session"));
+
 let workOrderTable = $("#workOrderTable").DataTable({
     serverSide: false,
     responsive: true,
@@ -34,9 +36,30 @@ $(document).ready(function () {
     let idToDelete = '';
     $(document).on('click', '#triggerTable', function (e) {
         loadTotals();
+        loadLastUpdate();
         loadDataTable();
+        renderEditModal();
         e.preventDefault();
     });
+
+    function renderEditModal() {
+        const administrator = document.getElementById('administrator');
+        const warehouse = document.getElementById('warehouse');
+        const metrology = document.getElementById('metrology');
+        if (session[0].role_id == 2) {
+            administrator.classList.add('d-none');
+            metrology.classList.remove('d-none');
+            warehouse.classList.add('d-none');
+        } else if (session[0].role_id == 3) {
+            administrator.classList.add('d-none');
+            warehouse.classList.remove('d-none');
+            metrology.classList.add('d-none');
+        } else {
+            administrator.classList.remove('d-none');
+            metrology.classList.add('d-none');
+            warehouse.classList.add('d-none');
+        }
+    }
 
     function loadDataTable() {
         $("#work-orders").css({ display: "block" });  
@@ -45,7 +68,6 @@ $(document).ready(function () {
         const row_color = $('#row_color').val();
         const url = '/mindrod/api/work_order/read.php';
         let data = {};
-        let rows = '';
         data.year = year;
     
         if (month.length !== 0) 
@@ -181,6 +203,22 @@ $(document).ready(function () {
         });
     };
 
+    function loadLastUpdate() {
+        const url = '/mindrod/api/work_order/last_update.php';
+        $.ajax({
+            url: url,
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                $("#lastUpdate").html(response.last_update);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    };
+
     $(document).on('click', '.edit_data', function () {
         $('#insert_form')[0].reset();
         const id = $(this).attr("id");
@@ -230,7 +268,7 @@ $(document).ready(function () {
     });
 
     $("#yes").on("click", function () {
-        const data = JSON.stringify({'id': idToDelete});
+        const data = JSON.stringify({'id': idToDelete, "updated_by": session[0].id});
         $.ajax({
             url: '/mindrod/api/work_order/deactivate_work_order.php',
             method: "POST",
@@ -261,6 +299,7 @@ $(document).ready(function () {
                 }
             }
         });
+        data.updated_by = session[0].id;
         data = JSON.stringify(data);
 
         $.ajax({
@@ -284,6 +323,7 @@ $(document).ready(function () {
                 updateDOM(response);
                 console.log(response);
                 toastr.success(response.spanish);
+                loadLastUpdate();
             },
             error: function (err) {
                 console.log(err.responseText);
