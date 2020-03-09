@@ -112,7 +112,6 @@
             <form>
               <div class="row">
                 <select class="form-control" id="years" name="years">
-                  <option  value='2019'>2019</option><option selected='selected' value='2020'>2020</option>
                 </select>
               </div>
               <div class="row mt-2">
@@ -135,9 +134,11 @@
               <div class="row mt-2">
                 <label class='small' for='row_color'>Status</label>
                 <select class='form-control form-control-sm' multiple id='row_color' name="row_color[]" size="9">
-                <option value='row-pink' >Entregado al cliente</option><option value='row-blue' >En almacén</option><option value='row-red' >Cuarentena</option>                </select>
+                  <option value='row-pink' >Entregado al cliente</option>
+                  <option value='row-blue' >En almacén</option>
+                  <option value='row-red' >Cuarentena</option>
+                </select>
               </div>
-
               <div class="row mt-2 mb-2">
                 <input type="submit" value="Ver" class="btn btn-dark btn-block" id="triggerTable">
               </div>

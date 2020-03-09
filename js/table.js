@@ -31,6 +31,7 @@ let workOrderdetails = [];
 
 $(document).ready(function () {
 
+    loadYears();
     let rowClass = '';
     let row = '';
     let idToDelete = '';
@@ -41,6 +42,24 @@ $(document).ready(function () {
         renderEditModal();
         e.preventDefault();
     });
+
+    function loadYears() {
+        const url = '/mindrod/api/work_order/load_years.php';
+        $.ajax({
+            url: url,
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                var $years = $("#years");
+                $.each(response, function(year) {
+                    $years.append($("<option />").val(response[year].year).text(response[year].year));
+                });
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        });
+    };
 
     function renderEditModal() {
         const administrator = document.getElementById('administrator');
@@ -210,7 +229,6 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
             success: function (response) {
-                console.log(response);
                 $("#lastUpdate").html(response.last_update);
             },
             error: function (err) {

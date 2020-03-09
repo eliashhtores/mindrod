@@ -27,6 +27,7 @@
     public $monthQuery;
     public $rowColorQuery;
     public $query;
+    public $years;
     public $last_update;
 
     // Constructor with DB
@@ -116,6 +117,49 @@
       $this->average = number_format((float)$row['average'], 2, '.', '') . '%';
       $this->total = $row['total'];
     }
+
+
+    // Get exceptions
+    public function load_exceptions() {
+      // Create queries
+      $this->query = "SELECT MONTH(receipt_date) AS month, 
+        SUM(CASE WHEN indicator = 'AT' THEN 1 ELSE 0 END) AS early,
+        SUM(CASE WHEN indicator = 'ET' THEN 1 ELSE 0 END) AS on_time,
+        SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
+        SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
+        COUNT(*) AS total
+        FROM work_order
+        WHERE YEAR(receipt_date) = ?
+          AND status >= 0
+        GROUP BY 1";
+
+      // Prepare statement
+      $stmt = $this->conn->prepare($this->query);
+
+      // Execute query
+      $stmt->execute([$this->year]);
+      $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      // Set properties
+      $this->row = $row;
+    }
+
+    // Get years
+    public function load_years() {
+      // Create query
+      $this->query = "SELECT DISTINCT YEAR(receipt_date) as year FROM work_order ORDER BY year DESC";
+
+      // Prepare statement
+      $stmt = $this->conn->prepare($this->query);
+
+      // Execute query
+      $stmt->execute();
+      $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      // Set properties
+      $this->years = $row;
+    }
+
 
     // Get totals
     public function last_update() {
