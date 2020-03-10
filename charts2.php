@@ -155,55 +155,7 @@
                             </div>
                             <div class="card-body">
                                 <table class="table table-bordered table-striped">
-                                    <tbody>
-                                        <tr>
-                                            <th scope='row'>Enero</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Febrero</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Marzo</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Abril</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Mayo</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Junio</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Julio</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Agosto</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Septiembre</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Octubre</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Noviembre</th>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope='row'>Diciembre</th>
-                                            <td></td>
-                                        </tr>                
+                                    <tbody id="onTime">      
                                     </tbody>
                                 </table>
                             </div>
@@ -258,20 +210,19 @@
 
     <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/easyhttp3.js"></script>
 
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Page level plugin JavaScript-->
-    <!-- <script src="vendor/chart.js/Chart.min.js"></script> -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <!-- <script src="js/sb-admin.min.js"></script> -->
+    <script src="js/sb-admin.min.js"></script>
 
+    <script src="js/chart-bar.js"></script>
     <!-- Demo scripts for this page-->
     <!-- <script src="js/demo/chart-area-demo.js"></script>
-    <script src="js/demo/chart-bar-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script> -->
 
 </body>

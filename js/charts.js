@@ -24,13 +24,17 @@ $(document).ready(function() {
 
     $(document).on('click', '#triggerTable', function (e) {
         document.querySelector('#content').classList.remove('d-none');
-        loadContent();
+        loadTables();
+        loadCharts();
         e.preventDefault();
     });
 
-    function loadContent() {
+    function loadCharts() {
+        console.log('Test');
+    }
+
+    function loadTables() {
         const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        months.reverse();
         const year = document.querySelector('#years').value;
         const url = '/mindrod/api/work_order/load_exceptions.php';
         let data = {};
@@ -41,7 +45,12 @@ $(document).ready(function() {
             node.innerHTML = year;
         }
         const exceptions = document.querySelector('#exceptions');
-        exceptions.innerHTML = '';        
+        exceptions.innerHTML = '';
+        const onTime = document.querySelector('#onTime');
+        onTime.innerHTML = '';
+        let reworksPercent;
+        let out_of_timePercent;
+        let on_timePercent;
 
         $.ajax({
             url: url,
@@ -49,22 +58,39 @@ $(document).ready(function() {
             data: data,
             dataType: "json",
             success: function (response) {
+                let htmlExceptions = '';
+                let htmlOnTime = '';
                 for (let i = 0; i < months.length; i++) {
-
-                    const row = exceptions.insertRow(0);
-                    const outOfTimePercentaje = row.insertCell(0);
-                    const outOfTime = row.insertCell(0);
-                    const reworksPercentaje = row.insertCell(0);
-                    const reworks = row.insertCell(0);
-                    const monthRow = row.insertCell(0);
-                    monthRow.innerHTML = months[i];
                     if (response.data[i] !== undefined) {
-                        const reworksPercent = response.data[i].reworks/response.data[i].total * 100;
-                        const out_of_timePercent = response.data[i].out_of_time/response.data[i].total * 100;
-                        outOfTime.innerHTML = out_of_timePercent;
-                        // console.log(reworksPercent.toFixed(2), out_of_timePercent.toFixed(2));
+                        reworksPercent = response.data[i].reworks/response.data[i].total * 100;
+                        reworksPercent = reworksPercent.toFixed(2) + '%';
+                        out_of_timePercent = response.data[i].out_of_time/response.data[i].total * 100;
+                        out_of_timePercent = out_of_timePercent.toFixed(2) + '%';
+                        on_timePercent = response.data[i].on_time/response.data[i].total * 100;
+                        on_timePercent = on_timePercent.toFixed(2) + '%';
+                    } else {
+                        reworksPercent = '';
+                        out_of_timePercent = '';
+                        on_timePercent = '';
                     }
+                    htmlExceptions += `
+                            <tr>
+                                <th scope="row">${months[i]}</th>
+                                <td>${reworksPercent}</td>
+                                <td>10%</td>
+                                <td>${out_of_timePercent}</td>
+                                <td>5%</td>
+                            </tr>
+                    `;
+                    htmlOnTime += `
+                            <tr>
+                                <th scope='row'>${months[i]}</th>
+                                <td>${on_timePercent}</td>
+                            </tr>
+                    `;
                 }
+                exceptions.innerHTML = htmlExceptions;
+                onTime.innerHTML = htmlOnTime;
             },
             error: function (err) {
                 console.log(err.responseText);

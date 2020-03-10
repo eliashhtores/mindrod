@@ -119,6 +119,29 @@
     }
 
 
+    public function get_monthly_data() {
+      $this->query = "SELECT MONTH(receipt_date) AS month, 
+      SUM(CASE WHEN indicator = 'AT' THEN 1 ELSE 0 END) AS early,
+      SUM(CASE WHEN indicator = 'ET' THEN 1 ELSE 0 END) AS on_time,
+      SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
+      SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
+      COUNT(*) AS total
+      FROM work_order
+      WHERE YEAR(receipt_date) = ?
+          AND status >= 0
+      GROUP BY 1";
+
+      // Prepare statement
+      $stmt = $this->conn->prepare($this->query);
+
+      // Execute query
+      $stmt->execute([$this->year]);
+      $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      // Set properties
+      $this->data = $row;
+    }
+
     // Get exceptions
     public function load_exceptions() {
       // Create queries
