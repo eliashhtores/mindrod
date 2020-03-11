@@ -25,10 +25,5 @@
     return;
   } 
 
-  // Create array
-  $workOrder_arr = array(
-    'data' => $workOrder->row
-  );
-
   // Make JSON
-  print_r(json_encode($workOrder_arr));
+  print_r(json_encode($workOrder->row));

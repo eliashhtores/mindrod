@@ -145,7 +145,7 @@
       SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
       SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
       COUNT(*) AS total
-      FROM work_order
+      FROM this->table
       WHERE YEAR(receipt_date) = ?
           AND status >= 0
       GROUP BY 1";
@@ -170,7 +170,7 @@
         SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
         SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
         COUNT(*) AS total
-        FROM work_order
+        FROM $this->table
         WHERE YEAR(receipt_date) = ?
           AND status >= 0
         GROUP BY 1";

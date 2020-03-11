@@ -41,9 +41,8 @@ function graphReworks(data) {
   let reworks = [];
 
   for (const month in data) {
-    if (data.hasOwnProperty(month)) {
-      reworks[month] = (data[month].reworks / data[month].total * 100).toFixed(2);
-    }
+    if (data.hasOwnProperty(month)) 
+      reworks[data[month].month-1] = (data[month].reworks / data[month].total * 100).toFixed(2);
   }
   
   const myLineChart = new Chart(ctx, {
@@ -93,10 +92,10 @@ function graphOutOfTime(data) {
   let out_of_time = [];
 
   for (const month in data) {
-    if (data.hasOwnProperty(month)) {
-      out_of_time[month] = (data[month].out_of_time / data[month].total * 100).toFixed(2);
-    }
+    if (data.hasOwnProperty(month)) 
+      out_of_time[data[month].month-1] = (data[month].out_of_time / data[month].total * 100).toFixed(2);
   }
+
 
   const myLineChart = new Chart(ctx, {
     type: 'bar',
@@ -145,9 +144,8 @@ function graphOnTime(data) {
   let on_time = [];
 
   for (const month in data) {
-    if (data.hasOwnProperty(month)) {
-      on_time[month] = (data[month].on_time / data[month].total * 100).toFixed(2);
-    }
+    if (data.hasOwnProperty(month)) 
+      on_time[data[month].month-1] = (data[month].on_time / data[month].total * 100).toFixed(2);
   }
 
   const myLineChart = new Chart(ctx, {

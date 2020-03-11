@@ -43,9 +43,9 @@ $(document).ready(function() {
         exceptions.innerHTML = '';
         const onTime = document.querySelector('#onTime');
         onTime.innerHTML = '';
-        let reworksPercent;
-        let out_of_timePercent;
-        let on_timePercent;
+        let reworksPercent = [];
+        let out_of_timePercent = [];
+        let on_timePercent = [];
 
         $.ajax({
             url: url,
@@ -55,22 +55,25 @@ $(document).ready(function() {
             success: function (response) {
                 let htmlExceptions = '';
                 let htmlOnTime = '';
-                for (let i = 0; i < months.length; i++) {
-                    if (response.data[i] !== undefined) {
-                        reworksPercent = response.data[i].reworks/response.data[i].total * 100;
-                        reworksPercent = reworksPercent.toFixed(2) + '%';
-                        out_of_timePercent = response.data[i].out_of_time/response.data[i].total * 100;
-                        out_of_timePercent = out_of_timePercent.toFixed(2) + '%';
-                        on_timePercent = response.data[i].on_time/response.data[i].total * 100;
-                        on_timePercent = on_timePercent.toFixed(2) + '%';
+                let reworks = [];
+                let out_of_time = [];
+                let on_time = [];
+                for (const month in months) {
+                    if (response.hasOwnProperty(month)) {
+                        reworks[response[month].month] = (response[month].reworks / response[month].total * 100).toFixed(2);
+                        reworksPercent = reworks[response[month].month];
+                        // out_of_timePercent = (response[month].out_of_time / response[month].total * 100).toFixed(2);
+                        // on_timePercent = (response[month].on_time / response[month].total * 100).toFixed(2);
                     } else {
                         reworksPercent = '';
                         out_of_timePercent = '';
                         on_timePercent = '';
                     }
+                    console.log(`En ${months[month]} hay = ${reworksPercent}`);
+
                     htmlExceptions += `
                             <tr>
-                                <th scope="row">${months[i]}</th>
+                                <th scope="row">${months[month]}</th>
                                 <td>${reworksPercent}</td>
                                 <td>10%</td>
                                 <td>${out_of_timePercent}</td>
@@ -79,7 +82,7 @@ $(document).ready(function() {
                     `;
                     htmlOnTime += `
                             <tr>
-                                <th scope='row'>${months[i]}</th>
+                                <th scope='row'>${months[month]}</th>
                                 <td>${on_timePercent}</td>
                             </tr>
                     `;
