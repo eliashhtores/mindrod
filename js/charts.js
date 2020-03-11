@@ -25,13 +25,8 @@ $(document).ready(function() {
     $(document).on('click', '#triggerTable', function (e) {
         document.querySelector('#content').classList.remove('d-none');
         loadTables();
-        loadCharts();
         e.preventDefault();
     });
-
-    function loadCharts() {
-        console.log('Test');
-    }
 
     function loadTables() {
         const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];

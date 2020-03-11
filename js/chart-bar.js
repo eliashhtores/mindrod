@@ -1,38 +1,52 @@
-// const http = new EasyHTTP;
-// const host = getHost();
-// const url = new URL(`http://${host}/mindrod/include/get_monthly_data.php`);
-const url = '/mindrod/api/work_order/get_monthly_data.php';
 const labels = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-// http.get(url)
-// .then(function (data) {
-//   render(data);
-// })
-// .catch(err => console.log(err));
+$(document).on('click', '#triggerTable', function (e) {
+    loadCharts();
+  e.preventDefault();
+});
 
-// function render(data) {
-//   graphReworks(data);
-//   graphOutOfTime(data);
-//   graphInTime(data);
-// }
+function loadCharts() {
+
+const year = document.querySelector('#years').value;
+const url = '/mindrod/api/work_order/get_monthly_data.php';
+let data = {};
+data.year = year;
+
+  $.ajax({
+    url: url,
+    method: "GET",
+    data: data,
+    dataType: "json",
+    success: function (response) {
+      render(response);
+    },
+    error: function (err) {
+        console.log(err.responseText);
+    }
+  });
+}
+
+function render(data) {
+  graphReworks(data);
+  graphOutOfTime(data);
+  graphOnTime(data);
+}
 
 // Set new default font family and font color to mimic Bootstrap's default styling
  Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
  Chart.defaults.global.defaultFontColor = '#292b2c';
 
 function graphReworks(data) {
-  var ctx = document.getElementById("reworks");
+  const ctx = document.getElementById("reworks");
+  let reworks = [];
 
-  let reworks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  for (let index = 0; index < 12; index++) {
-    if (data[index] === undefined ) {
-      continue;
-    } else {
-      reworks[data[index].month - 1] = (data[index].reworks / data[index].total) * 100;
+  for (const month in data) {
+    if (data.hasOwnProperty(month)) {
+      reworks[month] = (data[month].reworks / data[month].total * 100).toFixed(2);
     }
   }
   
-  var myLineChart = new Chart(ctx, {
+  const myLineChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,
@@ -75,18 +89,16 @@ function graphReworks(data) {
 }
 
 function graphOutOfTime(data) {
-  var ctx = document.getElementById("out_of_time");
-
+  const ctx = document.getElementById("out_of_time");
   let out_of_time = [];
-  for (let index = 0; index < 12; index++) {
-    if (data[index] === undefined ) {
-      continue;
-    } else {
-      out_of_time[data[index].month - 1] = (data[index].out_of_time / data[index].total) * 100;
+
+  for (const month in data) {
+    if (data.hasOwnProperty(month)) {
+      out_of_time[month] = (data[month].out_of_time / data[month].total * 100).toFixed(2);
     }
   }
 
-  var myLineChart = new Chart(ctx, {
+  const myLineChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,
@@ -128,19 +140,17 @@ function graphOutOfTime(data) {
   });
 }
 
-function graphInTime(data) {
-  var ctx = document.getElementById("on_time");
-
+function graphOnTime(data) {
+  const ctx = document.getElementById("on_time");
   let on_time = [];
-  for (let index = 0; index < 12; index++) {
-    if (data[index] === undefined ) {
-      continue;
-    } else {
-      on_time[data[index].month - 1] = (data[index].on_time / data[index].total) * 100;
+
+  for (const month in data) {
+    if (data.hasOwnProperty(month)) {
+      on_time[month] = (data[month].on_time / data[month].total * 100).toFixed(2);
     }
   }
 
-  var myLineChart = new Chart(ctx, {
+  const myLineChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,

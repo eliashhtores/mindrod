@@ -28,6 +28,7 @@
     public $rowColorQuery;
     public $query;
     public $years;
+    public $current;
     public $last_update;
 
     // Constructor with DB
@@ -86,6 +87,25 @@
       $this->row_color = $row['row_color'];
     }
 
+
+    // Get work orders 
+    public function get_current_work_orders() {
+      // Create query
+      $this->query = "SELECT COUNT(*) AS current FROM work_order WHERE YEAR(receipt_date) = YEAR(CURDATE()) AND MONTH(receipt_date) = MONTH(CURDATE()) AND status >= 0";
+
+      // Prepare statement
+      $stmt = $this->conn->prepare($this->query);
+
+      // Execute query
+      $stmt->execute();
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      // Set properties
+      $this->current = $row['current'];
+
+      return $stmt;
+    }
+
     // Get totals
     public function load_totals() {
       // Create query
@@ -117,7 +137,6 @@
       $this->average = number_format((float)$row['average'], 2, '.', '') . '%';
       $this->total = $row['total'];
     }
-
 
     public function get_monthly_data() {
       $this->query = "SELECT MONTH(receipt_date) AS month, 
@@ -182,7 +201,6 @@
       // Set properties
       $this->years = $row;
     }
-
 
     // Get totals
     public function last_update() {

@@ -13,11 +13,9 @@
   // Instantiate blog post object
   $workOrder = new WorkOrder($db);
 
-  $workOrder->year = isset($_GET['year']) ? $_GET['year'] : NULL;
-
-  // Get monthly data
+  // Get current work orders
   try {
-    $workOrder->get_monthly_data();
+    $workOrder->get_current_work_orders();
   } catch (Exception $e) {
     header("HTTP/1.1 500 Internal Server Error");
     echo $e->getMessage() . ' while executing: ' . $workOrder->query;
@@ -25,4 +23,4 @@
   } 
 
   // Make JSON
-  print_r(json_encode($workOrder->data));
+  print_r(json_encode($workOrder->current));

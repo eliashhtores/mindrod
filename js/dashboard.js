@@ -45,13 +45,14 @@ $(document).ready(function() {
   getCurrentWorkOrders();
 
   function getCurrentWorkOrders() {
-    url = '/mindrod/include/get_current_work_orders.php';
+    url = '/mindrod/api/work_order/get_current_work_orders.php';
     $.ajax({
       url: url,
       method: "GET",
       dataType: "json",
       success: function (response) {
-        $('#current').text(response.current);
+        document.querySelector('#current').innerHTML = response;
+        // $('#current').text(response);
       }
     });
   }
