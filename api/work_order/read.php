@@ -63,6 +63,10 @@
     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
       extract($row);
 
+      if ($status == -1) {
+        $status = '';
+      }
+
       $workOrder_item = array(
         'id' => $id,
         'invoice' => $invoice,

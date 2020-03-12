@@ -41,8 +41,7 @@
       // Create query
       $this->query = "SELECT * FROM $this->table WHERE YEAR(receipt_date) = ?
       $this->monthQuery
-      $this->rowColorQuery
-      AND status >= 0";
+      $this->rowColorQuery";
 
       // Prepare statement
       $stmt = $this->conn->prepare($this->query);
@@ -145,7 +144,7 @@
       SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
       SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
       COUNT(*) AS total
-      FROM this->table
+      FROM $this->table
       WHERE YEAR(receipt_date) = ?
           AND status >= 0
       GROUP BY 1";
@@ -159,31 +158,6 @@
 
       // Set properties
       $this->data = $row;
-    }
-
-    // Get exceptions
-    public function load_exceptions() {
-      // Create queries
-      $this->query = "SELECT MONTH(receipt_date) AS month, 
-        SUM(CASE WHEN indicator = 'AT' THEN 1 ELSE 0 END) AS early,
-        SUM(CASE WHEN indicator = 'ET' THEN 1 ELSE 0 END) AS on_time,
-        SUM(CASE WHEN indicator = 'FT' THEN 1 ELSE 0 END) AS out_of_time,
-        SUM(CASE WHEN rework = 'R' THEN 1 ELSE 0 END) AS reworks,
-        COUNT(*) AS total
-        FROM $this->table
-        WHERE YEAR(receipt_date) = ?
-          AND status >= 0
-        GROUP BY 1";
-
-      // Prepare statement
-      $stmt = $this->conn->prepare($this->query);
-
-      // Execute query
-      $stmt->execute([$this->year]);
-      $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-      // Set properties
-      $this->row = $row;
     }
 
     // Get years
@@ -221,14 +195,14 @@
     // Deactivate single work order
     public function deactivate_work_order() {
       // Deactivate query
-      $this->query = 'UPDATE work_order SET status = -1, updated_by = ?
+      $this->query = 'UPDATE work_order SET status = -1, row_color = ?, updated_by = ?
         WHERE id = ?';
 
       // Prepare statement
       $stmt = $this->conn->prepare($this->query);
 
       // Execute query
-      if($stmt->execute([$this->updated_by, $this->id])) {
+      if($stmt->execute([$this->row_color, $this->updated_by, $this->id])) {
         return true;
       }
       
@@ -260,7 +234,6 @@
       $this->machinist = $this->cleanData($this->machinist);
       $this->status = $this->cleanData($this->status);
       $this->observations = $this->cleanData($this->observations);
-      $this->row_color = $this->cleanData($this->row_color);
 
       $userType = $this->getUserType($this->updated_by);
 

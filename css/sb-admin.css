@@ -53,6 +53,12 @@
   border-color: #b8daff;
 }
 
+.row-gray {
+  background-color: var(--gray);
+  color: #000;
+  border-color: #000;
+}
+
 .row-red {
   background-color: #dc3545;
   color:  var(--red);

@@ -281,19 +281,21 @@ $(document).ready(function () {
     $(document).on('click', '.remove-data', function (e) {
         e.preventDefault();
         idToDelete = $(this).attr("id");
+        row_color = 'row-gray';
         row = $(this).parent().parent();
         $('#confirmModal').modal('show');
     });
 
     $("#yes").on("click", function () {
-        const data = JSON.stringify({'id': idToDelete, "updated_by": session[0].id});
+        const data = JSON.stringify({'row_color': row_color, 'id': idToDelete, "updated_by": session[0].id});
         $.ajax({
             url: '/mindrod/api/work_order/deactivate_work_order.php',
             method: "POST",
             data: data,
             dataType: "json",
             success: function (response) {
-                row.remove();
+                // row.remove();
+                row.addClass(row_color);
                 loadTotals();
                 toastr.success(response.spanish);
                 console.log(response.result);

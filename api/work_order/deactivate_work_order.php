@@ -19,8 +19,9 @@
   $data = json_decode(file_get_contents("php://input"));
 
   // Set ID to update
-  $workOrder->id = $data->id;
   $workOrder->updated_by = $data->updated_by;
+  $workOrder->row_color = $data->row_color;
+  $workOrder->id = $data->id;
 
   // Update Work orde
   try {
@@ -32,7 +33,7 @@
   }
 
     echo json_encode(
-      array('message' => 'Work order deactivated.',
-            'spanish' => 'Orden de trabajo borrada',
+      array('message' => 'Work order canceled.',
+            'spanish' => 'Orden de trabajo cancelada',
             'result' => $workOrder)
       );

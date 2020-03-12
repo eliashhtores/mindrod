@@ -31,7 +31,7 @@ $(document).ready(function() {
     function loadTables() {
         const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
         const year = document.querySelector('#years').value;
-        const url = '/mindrod/api/work_order/load_exceptions.php';
+        const url = '/mindrod/api/work_order/get_monthly_data.php';
         let data = {};
         data.year = year;
 
@@ -60,21 +60,23 @@ $(document).ready(function() {
                 let on_time = [];
                 for (const month in months) {
                     if (response.hasOwnProperty(month)) {
+                        // @TODO Fix calculation
                         reworks[response[month].month] = (response[month].reworks / response[month].total * 100).toFixed(2);
                         reworksPercent = reworks[response[month].month];
-                        // out_of_timePercent = (response[month].out_of_time / response[month].total * 100).toFixed(2);
-                        // on_timePercent = (response[month].on_time / response[month].total * 100).toFixed(2);
+                        // console.log(response[month].month); // 10, 11, 12
+                        out_of_timePercent = (response[month].out_of_time / response[month].total * 100).toFixed(2);
+                        on_timePercent = (response[month].on_time / response[month].total * 100).toFixed(2);
                     } else {
-                        reworksPercent = '';
+                        reworksPercent = 0;
                         out_of_timePercent = '';
                         on_timePercent = '';
                     }
-                    console.log(`En ${months[month]} hay = ${reworksPercent}`);
+                    console.log(reworksPercent);
 
                     htmlExceptions += `
                             <tr>
                                 <th scope="row">${months[month]}</th>
-                                <td>${reworksPercent}</td>
+                                <td>${reworksPercent}%</td>
                                 <td>10%</td>
                                 <td>${out_of_timePercent}</td>
                                 <td>5%</td>
@@ -87,6 +89,7 @@ $(document).ready(function() {
                             </tr>
                     `;
                 }
+
                 exceptions.innerHTML = htmlExceptions;
                 onTime.innerHTML = htmlOnTime;
             },

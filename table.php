@@ -101,7 +101,7 @@
                   <td id="average"></td>
               </tr>
                 <tr>
-                  <td>Número de ordenes</td>
+                  <td>Número de ordenes vigentes</td>
                   <td id="total"></td>
                 </tr>
               </tbody>
@@ -343,14 +343,14 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Borrar orden de trabajo</h5>
+            <h5 class="modal-title">Cancelar orden de trabajo</h5>
             <button class="close" data-dismiss="modal">×</button>
           </div>
-          <div class="modal-body">¿Desea borrar esta orden de trabajo?</div>
+          <div class="modal-body">¿Desea cancelar esta orden de trabajo?</div>
           <div class="container">
             <div class="d-flex row-hl">   
-              <div class="mr-auto item-hl"><button class="btn btn-secondary" id="no" data-dismiss="modal">Cancelar</button></div>
-              <div class="item-hl"><button class="btn btn-primary" id="yes" data-dismiss="modal">Borrar</button></div>
+              <div class="mr-auto item-hl"><button class="btn btn-secondary" id="no" data-dismiss="modal">No</button></div>
+              <div class="item-hl"><button class="btn btn-primary" id="yes" data-dismiss="modal">Sí</button></div>
             </div>
           </div>
           <br>
