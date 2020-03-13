@@ -108,9 +108,18 @@ $(document).ready(function () {
                     let edit, pdf, remove, invoice, work_order_number, folio, dwg_number, description, client, machine, quantity, serial, receipt_date, 
                         commitment_date, rework, indicator, machinist, status, observations;
                     for (let i in res) {
-                        edit = `<button id="${res[i].id}" class="btn btn-link edit_data"><i class="fa fa-pencil-square-o"></i></button>`;
-                        pdf = `<a href="/mindrod/uploads/${res[i].id}.pdf" target="_blank" class="btn btn-link"><i class="fas fa-file-pdf"></i></a></td>`;
-                        remove = `<button id="${res[i].id}" class="btn btn-link remove-data"><i class="fa fa-remove"></i></button>`;
+                        edit = '';
+                        pdf = '';
+                        remove = '';
+                        if (res[i].row_color !== 'row-gray') {
+                            if (session[0].role_id == 1) {
+                                remove = `<button id="${res[i].id}" class="btn btn-link remove-data"><i class="fa fa-remove"></i></button>`;
+                            } else {
+                                remove = '';
+                            }
+                            edit = `<button id="${res[i].id}" class="btn btn-link edit_data"><i class="fa fa-pencil-square-o"></i></button>`;
+                            pdf = `<a href="/mindrod/uploads/${res[i].id}.pdf" target="_blank" class="btn btn-link"><i class="fas fa-file-pdf"></i></a></td>`;
+                        }
                         invoice = `<div id="invoice-${res[i].id}">${res[i].invoice}</div>`;
                         work_order_number = `<div id="work_order_number-${res[i].id}">${res[i].work_order_number}</div>`;
                         folio = `<div id="folio-${res[i].id}">${res[i].folio}</div>`; 
@@ -283,7 +292,9 @@ $(document).ready(function () {
         idToDelete = $(this).attr("id");
         row_color = 'row-gray';
         row = $(this).parent().parent();
-        this.classList.add('d-none')
+        this.classList.add('removable');
+        row[0].cells[0].firstElementChild.classList.add('removable');
+        row[0].cells[1].firstElementChild.classList.add('removable');
         $('#confirmModal').modal('show');
     });
 
@@ -296,6 +307,10 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 row.addClass(row_color);
+                const icons = document.querySelectorAll('.removable');
+                icons.forEach(icon => {
+                    icon.classList.add('d-none');
+                });
                 loadTotals();
                 toastr.success(response.spanish);
                 console.log(response.result);

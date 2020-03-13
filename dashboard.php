@@ -37,7 +37,7 @@
 <body id="page-top" class="sidebar-toggled">
 
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <div class="container col-4 ml-0"><img src="img/logo.jpg"></div>
+    <div class="container col-4 ml-0"><img src="img/logo.png"></div>
     <div class="container col-6">
       <a class='navbar-brand mr-1 font-weight-bold' href='#'>Programa de fabricación</a>
       <!-- Navbar -->
@@ -69,7 +69,11 @@
         </li>
       </ul>
     </div>
-    <div class="text-right text-danger col-2 font-weight-bold">FO-8.5.1 Rev. 2 01/01/2020</div>
+    <div class="text-right text-danger col-2 font-weight-bold">
+      FO-8.5.1 
+      <br>
+      Rev. 2 01/01/2020
+    </div>
   </nav>
 
   <div id="wrapper">
