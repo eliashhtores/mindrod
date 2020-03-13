@@ -40,14 +40,12 @@
 <body id="page-top" class="sidebar-toggled">
 
   <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <div class="container">
-
-    <!-- Get the role id to find out if the link will be displayed -->
-      <a class='navbar-brand mr-1' href='#'>MINDROD</a>
+    <div class="container col-4 ml-0"><img src="img/logo.jpg"></div>
+    <div class="container col-6">
+      <a class='navbar-brand mr-1 font-weight-bold' href='#'>Programa de fabricación</a>
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item">
-          <!-- Get the role id to find out if the link will be displayed -->
           <a class="nav-link" id="dashboard">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Administración</span>
@@ -58,11 +56,10 @@
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Gráficas</span></a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="table.php">
+        <li class="nav-item">
+          <a class="nav-link active" href="table.php">
             <i class="fas fa-fw fa-table"></i>
-            <span>Ordenes de trabajo</span>
-          </a>
+            <span>Ordenes de trabajo</span></a>
         </li>
         <li class="nav-item dropdown no-arrow">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -75,6 +72,7 @@
         </li>
       </ul>
     </div>
+    <div class="text-right text-danger col-2 font-weight-bold">FO-8.5.1 Rev. 2 01/01/2020</div>
   </nav>
 
   <div id="wrapper">
@@ -323,7 +321,14 @@
               </div>
               <div class="form-group">
                 <label class='small' for='row_color'>Status OC</label>
-                <select class='form-control form-control-sm' id='row_color_single' name='row_color_single'><option></option><option value="row-pink">Entregado al cliente</option><option value="row-blue">En almacén</option><option value="row-red">Cuarentena</option></select></div><div class="form-group">
+                <select class='form-control form-control-sm' id='row_color_single' name='row_color_single'>
+                  <option></option>
+                  <option value="row-pink">Entregado al cliente</option>
+                  <option value="row-blue">En almacén</option>
+                  <option value="row-red">Cuarentena</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label class="small" for="pdf">Archivo PDF</label>
                 <input type="file" id="pdf" name="pdf" formenctype="multipart/form-data" class="form-control-file"></div>                
                 <input type="hidden" name="id" id="id" />

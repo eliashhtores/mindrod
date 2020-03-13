@@ -25,8 +25,9 @@
 <body id="page-top" class="sidebar-toggled">
 
     <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-        <div class="container">
-            <a class='navbar-brand mr-1' href='#'>MINDROD</a>
+        <div class="container col-4 ml-0"><img src="img/logo.jpg"></div>
+        <div class="container col-6">
+            <a class='navbar-brand mr-1 font-weight-bold' href='#'>Programa de fabricación</a>
             <!-- Navbar -->
             <ul class="navbar-nav ml-auto ml-md-0">
                 <li class="nav-item">
@@ -35,8 +36,8 @@
                     <span>Administración</span>
                 </a>
                 </li>
-                <li class="nav-item active">
-                <a class="nav-link" href="charts.php">
+                <li class="nav-item">
+                <a class="nav-link active" href="charts.php">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Gráficas</span></a>
                 </li>
@@ -56,6 +57,7 @@
                 </li>
             </ul>
         </div>
+        <div class="text-right text-danger col-2 font-weight-bold">FO-8.5.1 Rev. 2 01/01/2020</div>
     </nav>
 
     <div id="wrapper">

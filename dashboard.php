@@ -36,9 +36,10 @@
 
 <body id="page-top" class="sidebar-toggled">
 
-<nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <div class="container">
-      <a class='navbar-brand mr-1' href='#'>MINDROD</a>
+  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+    <div class="container col-4 ml-0"><img src="img/logo.jpg"></div>
+    <div class="container col-6">
+      <a class='navbar-brand mr-1 font-weight-bold' href='#'>Programa de fabricación</a>
       <!-- Navbar -->
       <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item active">
@@ -68,6 +69,7 @@
         </li>
       </ul>
     </div>
+    <div class="text-right text-danger col-2 font-weight-bold">FO-8.5.1 Rev. 2 01/01/2020</div>
   </nav>
 
   <div id="wrapper">

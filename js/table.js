@@ -283,6 +283,7 @@ $(document).ready(function () {
         idToDelete = $(this).attr("id");
         row_color = 'row-gray';
         row = $(this).parent().parent();
+        this.classList.add('d-none')
         $('#confirmModal').modal('show');
     });
 
@@ -294,7 +295,6 @@ $(document).ready(function () {
             data: data,
             dataType: "json",
             success: function (response) {
-                // row.remove();
                 row.addClass(row_color);
                 loadTotals();
                 toastr.success(response.spanish);
