@@ -93,7 +93,7 @@
         <!-- Icon Cards-->
         <div class="row">
           <div class="col-xl-3 col-sm-6 mb-3">
-            <div class="card text-white bg-success o-hidden h-100">
+            <div class="card text-white bg-primary o-hidden h-100">
               <div class="card-body">
                 <div class="card-body-icon">
                   <i class="fas fa-fw fa-list"></i>
@@ -211,7 +211,6 @@
   </div>
 
   <script src="js/app.js"></script>
-  <script src="js/easyhttp3.js"></script>
   <script src="js/dashboard.js"></script>
 
   <!-- Custom scripts for all pages-->

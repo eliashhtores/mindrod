@@ -139,6 +139,7 @@
                   <option value='row-pink' >Entregado al cliente</option>
                   <option value='row-blue' >En almacén</option>
                   <option value='row-red' >Cuarentena</option>
+                  <option value='row-gray' >Cancelada</option>
                 </select>
               </div>
               <div class="row mt-2 mb-2">
@@ -393,7 +394,6 @@
 
   <script src="js/table.js"></script>
   <script src="js/app.js"></script>
-  <script src="js/easyhttp3.js"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin.min.js"></script>
