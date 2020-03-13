@@ -65,6 +65,10 @@
   border-color: #410000;
 }
 
+.delete {
+  color:red;
+}
+
 *,
 *::before,
 *::after {

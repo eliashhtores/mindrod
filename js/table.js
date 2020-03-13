@@ -113,7 +113,7 @@ $(document).ready(function () {
                         remove = '';
                         if (res[i].row_color !== 'row-gray') {
                             if (session[0].role_id == 1) {
-                                remove = `<button id="${res[i].id}" class="btn btn-link remove-data"><i class="fa fa-remove"></i></button>`;
+                                remove = `<button id="${res[i].id}" class="btn btn-link remove-data"><i class="fa fa-remove delete"></i></button>`;
                             } else {
                                 remove = '';
                             }
